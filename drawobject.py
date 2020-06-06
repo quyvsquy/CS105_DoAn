@@ -47,7 +47,7 @@ class drawObject:
                                 (1.0,1.0),
                                 (1.0,0.0),
         )
-    def MakeCube(self, size):
+    def make_cube(self, size):
         self.set_vertices(size,size,size)
         if self.typeDraw == "points":
             glBegin(GL_POINTS)
@@ -72,7 +72,7 @@ class drawObject:
                         glVertex3fv(self.vertices[vertex])
         glEnd()
 
-    def MakeBox(self, length, width, height):
+    def make_box(self, length, width, height):
         self.set_vertices(length,width,height)
         if self.typeDraw == "points":
             glBegin(GL_POINTS)
@@ -97,7 +97,7 @@ class drawObject:
                         glVertex3fv(self.vertices[vertex])
         glEnd()   
 
-    def MakeSphere(self,radius):
+    def make_sphere(self,radius):
         if self.typeDraw == "points":
             obj = gluNewQuadric()
             gluQuadricDrawStyle(obj,GLU_POINT)
@@ -111,7 +111,7 @@ class drawObject:
                 gluSphere(quadratic_obj, radius, 32, 32)
             else:
                 glutSolidSphere(radius,32,32)
-    def MakeCone(self,base_rad, length):
+    def make_cone(self,base_rad, length):
         if self.typeDraw == "points":
             obj = gluNewQuadric()
             gluQuadricDrawStyle(obj,GLU_POINT)
@@ -125,7 +125,7 @@ class drawObject:
                 gluCylinder(quadratic_obj, base_rad, 0.0, length, 32, 32)
             else:
                 glutSolidCone(base_rad,length,32,32)
-    def MakeCylinder(self, radius, length):
+    def make_cylinder(self, radius, length):
         #Hinh Tru
         if self.typeDraw == "points":
             obj = gluNewQuadric()
@@ -142,7 +142,7 @@ class drawObject:
             else:
                 glutSolidCylinder(radius,length,32,32)
 
-    def MakeTorus(self,innerRadius,outerRadious):
+    def make_torus(self,innerRadius,outerRadious):
         if self.typeDraw == "points":
             ##############################Ve diem####################
             pass
@@ -159,7 +159,7 @@ class drawObject:
                 glDisable(GL_TEXTURE_GEN_T)
             else:
                 glutSolidTorus(innerRadius,outerRadious,32,32)
-    def MakeTeapot(self,size):
+    def make_teapot(self,size):
         if self.typeDraw == "points":
             ##############################Ve diem####################
             pass
@@ -167,7 +167,7 @@ class drawObject:
             glutWireTeapot(size)
         else:
             glutSolidTeapot(size)
-    def MakeTruncatedCone(self, base_rad, top_rad, length):
+    def make_truncatedCone(self, base_rad, top_rad, length):
         #Non cut
         if self.typeDraw == "points":
             obj = gluNewQuadric()
@@ -188,10 +188,7 @@ class drawObject:
                 gluCylinder(quadratic_obj, base_rad, top_rad, length, 32, 32)
 
 
-
-
-
-def MakePyramid(size, height):
+def make_pyramid(size, height):
     half_size = size * 0.5
     glBegin(GL_TRIANGLES)
     # Front face

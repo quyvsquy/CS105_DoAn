@@ -18,8 +18,8 @@ rota = 45.0
 texture = 0
 
 #read image to byte
-image = Image.open("learn_opengl/textures/brick.jpg")
-# image = Image.open("learn_opengl/textures/cat.png")
+image = Image.open("./textures/brick.jpg")
+# image = Image.open("./textures/cat.png")
 image = image.transpose(Image.FLIP_TOP_BOTTOM)
 img_data = image.convert("RGBA").tobytes()
 
