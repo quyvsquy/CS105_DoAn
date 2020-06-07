@@ -7,8 +7,14 @@ class drawObject:
     def __init__(self,isTexture=None, typeDraw="solids"):
         self.isTexture = isTexture
         self.typeDraw = typeDraw #points,lines,solids
-
-    def set_vertices(self,x,y,z):
+        self.indexCoord2f = (
+                                (0.0,0.0),
+                                (0.0,1.0),
+                                (1.0,1.0),
+                                (1.0,0.0),
+                                (0.5,1.0),
+        )
+    def set_vertices(self,x,y,z): # for cube,box
         self.vertices =  [            
                             [x,-y,-z],
                             [x,y,-z],
@@ -41,12 +47,22 @@ class drawObject:
                             (1,5,7,2),
                             (4,0,3,6),
                         )
-        self.indexCoord2f = (
-                                (0.0,0.0),
-                                (0.0,1.0),
-                                (1.0,1.0),
-                                (1.0,0.0),
-        )
+    def init_pyramid(self,size,height):
+        half_size = size * 0.5
+        self.verPy = [
+                        [0.0,height,0.0],
+                        [-half_size,0.0,half_size],
+                        [half_size,0.0,half_size],
+                        [-half_size,0.0,-half_size],
+                        [half_size,0.0,-half_size],
+        ]
+        self.indexPy = [
+            [0,1,2],# Front face
+            [0,3,1],# Left face
+            [0,3,4],# Back face
+            [0,4,2],# Right face
+            [2,4,3,1],# Bottom face
+        ]
     def make_cube(self, size):
         self.set_vertices(size,size,size)
         if self.typeDraw == "points":
@@ -187,51 +203,43 @@ class drawObject:
                 quadratic_obj = gluNewQuadric()
                 gluCylinder(quadratic_obj, base_rad, top_rad, length, 32, 32)
 
-
-def make_pyramid(size, height):
-    half_size = size * 0.5
-    glBegin(GL_TRIANGLES)
-    # Front face
-    glTexCoord2f(0.5, 1.0)
-    glVertex3f(0.0, height, 0.0)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(-half_size, 0, half_size)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(half_size, 0, half_size)
-
-    # left face
-    glTexCoord2f(0.5, 1.0)
-    glVertex3f(0.0, height, 0.0)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(-half_size, 0.0, -half_size)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(-half_size, 0.0, half_size)
-
-    # back face
-    glTexCoord2f(0.5, 1.0)
-    glVertex3f(0.0, height, 0.0)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(-half_size, 0, -half_size)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(half_size, 0, -half_size)
-
-    # Right face
-    glTexCoord2f(0.5, 1.0)
-    glVertex3f(0.0, height, 0.0)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(half_size, 0.0, -half_size)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(half_size, 0.0, half_size)
-    glEnd()
-
-    # Bottom face
-    glBegin(GL_QUADS)
-    glTexCoord2f(0.0, 0.0)
-    glVertex3f(half_size, 0.0, half_size)
-    glTexCoord2f(0.0, 1.0)
-    glVertex3f(half_size, 0.0, -half_size)
-    glTexCoord2f(1.0, 1.0)
-    glVertex3f(-half_size, 0.0, -half_size)
-    glTexCoord2f(1.0, 0.0)
-    glVertex3f(-half_size, 0.0, half_size)
-    glEnd()
+    def make_pyramid(self,size, height):
+        self.init_pyramid(size,height)
+        if self.typeDraw == "points":
+            glBegin(GL_POINTS)
+            for ia in range(len(self.indexPy)-1):
+                for ib in self.indexPy[ia]:
+                    glVertex3fv(self.verPy[ib])
+            glEnd()
+            glBegin(GL_POINTS)
+            for ia in self.indexPy[-1]:
+                glVertex3fv(self.verPy[ia])
+            glEnd()
+        elif self.typeDraw == "lines":
+            glBegin(GL_LINES)
+            for ia in range(len(self.indexPy)-1):
+                for ib in self.indexPy[ia]:
+                    glVertex3fv(self.verPy[ib])
+            glEnd()
+            glBegin(GL_LINE_LOOP)
+            for ia in self.indexPy[-1]:
+                glVertex3fv(self.verPy[ia])
+            glEnd()
+        else:
+            glBegin(GL_TRIANGLES)
+            for ia in range(len(self.indexPy)-1):
+                tempInt = 0
+                for ib in self.indexPy[ia]:
+                    if ib == 0:
+                        glTexCoord2fv(self.indexCoord2f[-1])
+                    else:
+                        glTexCoord2fv(self.indexCoord2f[3]) if tempInt % 2 ==0 \
+                            else glTexCoord2fv(self.indexCoord2f[0])
+                    tempInt += 1
+                    glVertex3fv(self.verPy[ib])
+            glEnd()
+            glBegin(GL_QUADS)
+            for id,ia in enumerate(self.indexPy[-1]):
+                glTexCoord2fv(self.indexCoord2f[id])
+                glVertex3fv(self.verPy[ia])
+            glEnd()

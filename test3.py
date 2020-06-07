@@ -1,4 +1,2 @@
 
-
-a = lambda : 4
-print(a())
+print(char("c"))
