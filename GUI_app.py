@@ -4,7 +4,7 @@ from pyopengltk import OpenGLFrame
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from process import Draw
+from test3 import Draw
 font = 'mincho 12'
 ##############
 class App3D:
@@ -147,6 +147,7 @@ class App3D:
             if self.scale_mode % 2 != 0:
                 # self.object_drawing.active_scale = True
                 self.object_drawing.aphinType = 0
+                self.object_drawing.isScaleFirst = 1
                 self.frame_scale_board = Frame(self.object_drawing)
                 self.frame_scale_board.place(relx=0.01, rely=0.75, relwidth=0.2, relheight=0.24)
                 label_X = Label(self.frame_scale_board, text='X')
@@ -156,11 +157,11 @@ class App3D:
                 label_Z= Label(self.frame_scale_board, text='Z')
                 label_Z.place(relx=0.2, rely=0.77)
 
-                scaleX = Scale(self.frame_scale_board, variable = self.object_drawing.varScaleX, orient='horizontal', from_=1, to=10, resolution=0.1)
+                scaleX = Scale(self.frame_scale_board, variable = self.object_drawing.varScale[0], orient='horizontal', from_=1, to=10, resolution=0.01)
                 scaleX.place(relx=0.4, rely=0.05)
-                scaleY = Scale(self.frame_scale_board, variable = self.object_drawing.varScaleY, orient='horizontal', from_=1, to=10, resolution=0.1)
+                scaleY = Scale(self.frame_scale_board, variable = self.object_drawing.varScale[1], orient='horizontal', from_=1, to=10, resolution=0.01)
                 scaleY.place(relx=0.4, rely=0.35)
-                scaleZ = Scale(self.frame_scale_board, variable = self.object_drawing.varScaleZ, orient='horizontal', from_=1, to=10, resolution=0.1)
+                scaleZ = Scale(self.frame_scale_board, variable = self.object_drawing.varScale[2], orient='horizontal', from_=1, to=10, resolution=0.01)
                 scaleZ.place(relx=0.4, rely=0.65)
                 self.scale_mode = True
             if self.scale_mode % 2 == 0:
@@ -196,7 +197,7 @@ class App3D:
 
 
     def make_object(self, obj):
-        self.object_drawing = Draw(obj, False, True, 'face', self.frame_draw)
+        self.object_drawing = Draw(obj, False, 'face', self.frame_draw)
         self.object_drawing.animate = 1
         self.object_drawing.place(relwidth = 1, relheight=1)
         self.object_drawing.bind('<B1-Motion>', self.object_drawing.tkSizeObject)
