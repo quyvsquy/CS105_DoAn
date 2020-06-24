@@ -5,13 +5,13 @@ import math
 from shape import  drawObject
 
 class Init_Global_Para(drawObject):
-    def __init__(self, typeDraw="solids"):
+    def __init__(self, typeDraw="face"):
         drawObject.__init__(self)
         self.isTexture = 0
-        self.typeDraw = typeDraw #points,lines,solids
+        self.typeDraw = typeDraw # points, lines, face
 
         ###  TOGGLE DRAW DISPLAYS  ###
-        self.toggleAxes = 1
+        self.toggleAxes = False
         self.toggleParams = 1
 
         ###  Begin PROJECTION  ###
@@ -38,7 +38,7 @@ class Init_Global_Para(drawObject):
         ###  End PROJECTION  ###
 
         ###  LIGHTING  ###
-        self.toggleLight = 1
+        self.toggleLight = True
         # self.distance = 5
         self.lightPosX = 0
         self.lightPosY = 0
@@ -90,7 +90,6 @@ class Init_Global_Para(drawObject):
         # self.drawLight()
 
 
-
     def redisplayAll(self):
         self.displayReshape(1024, 768)
         glutPostRedisplay()
@@ -118,28 +117,26 @@ class Init_Global_Para(drawObject):
             ###  Label axes ###
             glColor3fv(self.white)
             glRasterPos3d(len,0,0)
-            self.Print("X")
             glRasterPos3d(0,len,0)
-            self.Print("Y")
             glRasterPos3d(0,0,len)
-            self.Print("Z")
-            if (self.toggleLight):
+            if self.toggleLight:
                 glEnable(GL_LIGHTING)
 
     def drawLight(self):
         ###  Light switch ###
-        if (self.toggleLight):
+        if self.toggleLight:
             ###  Translate intensity to color vectors ###
             Ambient    =[0.01*self.ambient ,0.01*self.ambient ,0.01*self.ambient ,1.0]
             Diffuse    =[0.01*self.diffuse ,0.01*self.diffuse ,0.01*self.diffuse ,1.0]
             Specular   =[0.01*self.specular,0.01*self.specular,0.01*self.specular,1.0]
-            Position   =[self.lightPosX,self.lightPosY,0.0,1.0]
+            # Position  = [self.lightPosX, self.lightPosY, 0.0, 1.0]
+            Position   = [0, 0, 5, 1.0]
             ###  Draw light position as sphere (still no lighting here) ###
             glPushMatrix()
-            glColor3fv(self.white)
+            glColor3fv([1,0,0])
             glDisable(GL_LIGHTING)
-            glTranslate(Position[0],Position[1],Position[2])
-            self.make_sphere(0.3)
+            glTranslate(Position[0], Position[1], Position[2])
+            # self.make_sphere(0.3)
             glPopMatrix()
             ###  Set ambient, diffuse, specular components and position of light 0 ###
             glLightfv(GL_LIGHT0,GL_AMBIENT, Ambient)
@@ -157,12 +154,3 @@ class Init_Global_Para(drawObject):
             glEnable(GL_LIGHT0)
         else:
             glDisable(GL_LIGHTING)
-
-    def PrintAt(self, x, y, *args):
-        glWindowPos2i(x,y)
-        self.Print(*args)
-
-    def Print(self, *args):
-        for ia in args:
-            for ch in ia:
-                glutBitmapCharacter(GLUT_BITMAP_HELVETICA_18 , ctypes.c_int( ord(ch)))
