@@ -38,7 +38,7 @@ class Init_Global_Para(drawObject):
         ###  End PROJECTION  ###
 
         ###  LIGHTING  ###
-        self.toggleLight = True
+        self.toggleLight = -1
         # self.distance = 5
         self.lightPosX = 0
         self.lightPosY = 0
@@ -85,9 +85,7 @@ class Init_Global_Para(drawObject):
     def initgl(self):
         glutInit()
         self.displayInit()
-        # self.displayEye()
         self.displayProject(self.fov,self.asp,self.zNear,self.zFar)
-        # self.drawLight()
 
 
     def redisplayAll(self):
@@ -124,19 +122,23 @@ class Init_Global_Para(drawObject):
 
     def drawLight(self):
         ###  Light switch ###
-        if self.toggleLight:
+        if self.toggleLight != -1:
             ###  Translate intensity to color vectors ###
             Ambient    =[0.01*self.ambient ,0.01*self.ambient ,0.01*self.ambient ,1.0]
             Diffuse    =[0.01*self.diffuse ,0.01*self.diffuse ,0.01*self.diffuse ,1.0]
             Specular   =[0.01*self.specular,0.01*self.specular,0.01*self.specular,1.0]
-            # Position  = [self.lightPosX, self.lightPosY, 0.0, 1.0]
-            Position   = [0, 0, 5, 1.0]
+            if self.toggleLight == 1:
+                Position   = [-10, 10, 5, 1.0]
+            else:
+                Position  = [self.lightPosX, self.lightPosY, 3.0, 1.0]
+                print(self.lightPosX, self.lightPosY)
             ###  Draw light position as sphere (still no lighting here) ###
             glPushMatrix()
-            glColor3fv([1,0,0])
+            glColor3fv(self.white)
+        
             glDisable(GL_LIGHTING)
             glTranslate(Position[0], Position[1], Position[2])
-            # self.make_sphere(0.3)
+            self.make_sphere(0.3)
             glPopMatrix()
             ###  Set ambient, diffuse, specular components and position of light 0 ###
             glLightfv(GL_LIGHT0,GL_AMBIENT, Ambient)

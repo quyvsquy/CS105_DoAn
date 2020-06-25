@@ -9,7 +9,7 @@ from initialization import Init_Global_Para
 from tkinter import *
 
 class Draw(Init_Global_Para, OpenGLFrame):
-    def __init__(self, shapeObject, isTexture=False, isLighting=False, typeDraw='face', *args, **kw):
+    def __init__(self, shapeObject, isTexture=False, isLighting=-1, typeDraw='face', *args, **kw):
         Init_Global_Para.__init__(self, typeDraw=typeDraw)
         OpenGLFrame.__init__(self, *args, **kw)
         self.object = shapeObject
@@ -58,19 +58,16 @@ class Draw(Init_Global_Para, OpenGLFrame):
         self.aphinType = 1
         self.isRotateFirst = 1
         self.bind('<B1-Motion>', self.tkAphin)
-        print(self.aphinType)
 
     def tkSetAphin2(self, event):
         self.aphinType = 2
         self.isTranslateFirst = 1
         self.bind('<B1-Motion>', self.tkAphin)
-        print(self.aphinType)
 
     def tkSetAphin3(self, event):
         # self.toggleLight = 1 - self.toggleLight
         self.aphinType = 3
         self.bind('<B1-Motion>', self.tkAphin)
-        print(self.aphinType)
 
     def tkSizeObject(self, event):
         self.sizeObject = math.sqrt(math.pow((event.x - self.mouse[0]), 2)+math.pow((event.y-self.mouse[1]), 2))/170
@@ -109,21 +106,8 @@ class Draw(Init_Global_Para, OpenGLFrame):
             self.lightSourceT =  (tempX * scale, tempY * scale)
             self.preLightSourceT = (tempX, tempY)
 
-    def Init(self):
-        glClearColor(0.0, 0.0, 0.0, 0.0)
-        glClearDepth(1.0)
-        glDepthFunc(GL_LESS)
-        glShadeModel(GL_SMOOTH)
-        glEnable(GL_DEPTH_TEST)
-        if self.isTexture:
-            glEnable(GL_TEXTURE_2D)
-            glEnable(GL_LIGHT0) #Cho vào khi auto xoay thì k bị nhiễu
-            image = Pil_image.open("./textures/brick.jpg")
-            # image = Pil_image.open("./textures/smiley.png")
-            self.image = image.transpose(Pil_image.FLIP_TOP_BOTTOM)
-            self.img_data = image.convert("RGBA").tobytes()
-            self.LoadGLTextures()
-        if self.toggleLight:
+    def redraw(self):
+        if self.toggleLight == 1 or self.toggleLight == 2:
             glEnable(GL_LIGHTING)
             glEnable(GL_LIGHT0)
             light_pos = [0.0, 0.0, 1.0, 0.0 ]
@@ -137,10 +121,10 @@ class Draw(Init_Global_Para, OpenGLFrame):
             shininess = 100
             glMateriali(GL_FRONT, GL_SHININESS, shininess)
 
-    def redraw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
         if self.aphinType == 3:
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
+            print(self.lightPosX, self.lightPosY)
         self.drawLight()
         glLoadIdentity()
         self.displayEye()
@@ -183,15 +167,15 @@ class Draw(Init_Global_Para, OpenGLFrame):
                 glRotatef(self.moveR[0], 0, 1, 0)   
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
 
-        glColor3fv([64, 255, 0])
+        glColor3fv([1, 1, 1])
         if self.object == 'cube':
             self.make_cube(self.sizeObject * 0.3)
         elif self.object == 'box':
             self.make_box(self.sizeObject, self.sizeObject * 2, self.sizeObject * 1.5)
         elif self.object == 'teapot':
-            self.make_teapot(self.sizeObject)
+            self.make_teapot(self.sizeObject * 0.3)
         elif self.object == 'sphere':
-            self.make_sphere(self.sizeObject)  
+            self.make_sphere(self.sizeObject * 0.3)  
         elif self.object == 'cylinder':
             self.make_cylinder(self.sizeObject * 0.25, self.sizeObject * 3 * 0.25)
         elif self.object == 'torus':
@@ -211,12 +195,6 @@ class Draw(Init_Global_Para, OpenGLFrame):
         # self.make_pyramid(self.sizeObject*2, self.sizeObject*3)
         self.drawAxes()
 
-        # self.PrintAt(5, 5, f"View Angle (th, ph) =({self.th}, {self.ph})")
-        # self.PrintAt(5, 25, f"toggleProjection =({self.toggleProjection})")
-        # self.PrintAt(5, 45, f"toggleProjection_Perspective =({self.toggleProjection_Perspective})")
-        # self.PrintAt(5, 65, f"toggleProjection_LookAt_Eye =({self.toggleProjection_LookAt_Eye})")
-        # self.PrintAt(5, 85, f"toggleProjection__LookAt_Center =({self.toggleProjection__LookAt_Center})")
-        # self.PrintAt(5, 105, f"toggleProjection__LookAt_Up =({self.toggleProjection__LookAt_Up})")
         glPopMatrix()
         glFlush()
 
@@ -227,22 +205,3 @@ class Draw(Init_Global_Para, OpenGLFrame):
         if self.winfo_ismapped():
             glViewport(0, 0, self.width, self.height)
             self.initgl()
-    
-
-    def LoadGLTextures(self):
-        self.texture = glGenTextures(1)
-        glBindTexture(GL_TEXTURE_2D, self.texture)
-        # Set the texture wrapping parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        # Set texture filtering parameters
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
-        glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
-
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.image.width, self.image.height, 0, GL_RGBA, GL_UNSIGNED_BYTE, self.img_data)
-        # glBindTexture( GL_TEXTURE_2D, 0 )
-
-    # def SetMaterialColor(self, ambient, diff_use):
-    #     glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
-    #     glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff_use)
