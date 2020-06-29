@@ -309,9 +309,8 @@ class App3D:
                 ftypes = [('JPG', '*.jpg'), ('PNG', '*.png'), ('All files', '*')]
                 dlg = Open(filetypes=ftypes)
                 path = dlg.show()
-            self.object_drawing.toggleTextures = self.texture_mode.get()
-            self.object_drawing['cursor'] = 'arrow'
-            if self.object_drawing.toggleTextures == 1:
+                self.object_drawing['cursor'] = 'arrow'
+                self.object_drawing.toggleTextures = 1
                 image = Image.open(f'{path}')
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
                 self.object_drawing.imageWHTex = (image.width, image.height)
