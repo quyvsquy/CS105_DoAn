@@ -1,7 +1,6 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
-from PIL import Image as Pil_image
 import numpy as np
 import math
 from pyopengltk import OpenGLFrame
@@ -42,7 +41,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
         self.preLightSourceT = (0.0, 0.0)
         self.bind('<Button-3>', self.tkSetAphin3)
         ### End LIGHT ###
-    
+
         
     def tkReset(self, event):
         self.aphinType = 4 # 0 is Scale; 1 is Rotate; 2 is Translate
@@ -107,24 +106,11 @@ class Draw(Init_Global_Para, OpenGLFrame):
             self.preLightSourceT = (tempX, tempY)
 
     def redraw(self):
-        if self.toggleLight == 1 or self.toggleLight == 2:
-            glEnable(GL_LIGHTING)
-            glEnable(GL_LIGHT0)
-            light_pos = [0.0, 0.0, 1.0, 0.0 ]
-            glLightfv(GL_LIGHT0, GL_POSITION, light_pos)
-            ambient = [0.0, 0.5, 0.0, 1.0]
-            glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambient)
-            diff_use = [0.5, 0.5, 0.0, 1.0]
-            glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff_use)
-            specular =  [ 1.0, 0.0, 0.0, 1.0 ]
-            glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, specular)
-            shininess = 100
-            glMateriali(GL_FRONT, GL_SHININESS, shininess)
-
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
         if self.aphinType == 3:
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
         self.drawLight()
+        self.drawTexture()
         glLoadIdentity()
         self.displayEye()
         glPushMatrix()

@@ -3,6 +3,7 @@ from OpenGL.GL import *
 from OpenGL.GLU import *
 import math
 from shape import  drawObject
+from PIL import Image
 
 class Init_Global_Para(drawObject):
     def __init__(self, typeDraw="face"):
@@ -52,9 +53,13 @@ class Init_Global_Para(drawObject):
         self.white = [1,1,1]
         self.lightPh = 90
 
-        # ###  TEXTURES  ###
-        # self.textures = None
+        ### BEGIN TEXTURES  ###
+        self.toggleTextures = -1
+        self.imageWHTex = None #Load image with PIL
+        self.textureDraw = None
+        self.imgDataTex = None
         # self.currentTexture = 0
+        ### END TEXTURES  ###
 
         # ###  ANIMATION  ###
         # self.toggleAnimation = DEF_ANIMATE
@@ -137,6 +142,7 @@ class Init_Global_Para(drawObject):
         
             glDisable(GL_LIGHTING)
             glTranslate(Position[0], Position[1], Position[2])
+            glDisable(GL_TEXTURE_2D)
             self.make_light_source_shape()
             glPopMatrix()
             ###  Set ambient, diffuse, specular components and position of light 0 ###
@@ -155,3 +161,19 @@ class Init_Global_Para(drawObject):
             glEnable(GL_LIGHT0)
         else:
             glDisable(GL_LIGHTING)
+
+    def drawTexture(self):
+        if self.toggleTextures != -1:
+            glEnable(GL_TEXTURE_2D)
+            glBindTexture(GL_TEXTURE_2D, self.textureDraw)
+            # Set the texture wrapping parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+            # Set texture filtering parameters
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR)
+            glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR)
+            glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL)
+            glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE)
+            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, self.imageWHTex[0], self.imageWHTex[1], 0, GL_RGBA, GL_UNSIGNED_BYTE, self.imgDataTex)
+        else:
+            glDisable(GL_TEXTURE_2D)

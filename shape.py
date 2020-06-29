@@ -75,7 +75,7 @@ class drawObject:
                     glVertex3fv(self.vertices[vertex])
         else:
             glBegin(GL_QUADS)
-            if self.isTexture:
+            if self.toggleTextures:
                 for surface in self.surfaces:
                     for ia, vertex in enumerate(surface):
                         glTexCoord2fv(self.indexCoord2f[ia])
@@ -100,7 +100,7 @@ class drawObject:
                     glVertex3fv(self.vertices[vertex])
         else:
             glBegin(GL_QUADS)
-            if self.isTexture:
+            if self.toggleTextures:
                 for surface in self.surfaces:
                     for ia, vertex in enumerate(surface):
                         glTexCoord2fv(self.indexCoord2f[ia])
@@ -121,7 +121,7 @@ class drawObject:
         elif self.typeDraw == "lines":
             glutWireSphere(radius, 32, 32)
         else:
-            if self.isTexture:
+            if self.toggleTextures:
                 quadratic_obj = gluNewQuadric()
                 gluQuadricTexture(quadratic_obj, GL_TRUE)
                 gluSphere(quadratic_obj, radius, 32, 32)
@@ -141,7 +141,7 @@ class drawObject:
         elif self.typeDraw == "lines":
             glutWireCone(base_rad, length, 32, 32)
         else:
-            if self.isTexture:
+            if self.toggleTextures:
                 quadratic_obj = gluNewQuadric()
                 gluQuadricTexture(quadratic_obj, GL_TRUE)
                 gluCylinder(quadratic_obj, base_rad, 0.0, length, 32, 32)
@@ -158,10 +158,9 @@ class drawObject:
         elif self.typeDraw == "lines":
             glutWireCylinder(radius, length, 32, 32)
         else:
-            if self.isTexture:
+            if self.toggleTextures:
                 quadratic_obj = gluNewQuadric()
                 gluQuadricTexture(quadratic_obj, GL_TRUE)
-                glRotatef(-90, 1.0, 0.0, 0.0)
                 gluCylinder(quadratic_obj, radius, radius, length, 32, 32)
             else:
                 glutSolidCylinder(radius, length, 32, 32)
@@ -173,7 +172,7 @@ class drawObject:
         elif self.typeDraw == "lines":
             glutWireTorus(innerRadius, outerRadious, 32, 32)
         else:
-            if self.isTexture:
+            if self.toggleTextures:
                 glTexGeni(GL_S, GL_TEXTURE_GEN_MODE,  GL_OBJECT_LINEAR)
                 glTexGeni(GL_T, GL_TEXTURE_GEN_MODE,  GL_OBJECT_LINEAR)
                 glEnable(GL_TEXTURE_GEN_S)
@@ -207,7 +206,7 @@ class drawObject:
             gluQuadricDrawStyle(obj, GLU_LINE)
             gluCylinder(obj, base_rad, top_rad, length, 32, 32)
         else:
-            if self.isTexture:
+            if self.toggleTextures:
                 quadratic_obj = gluNewQuadric()
                 gluQuadricTexture(quadratic_obj, GL_TRUE)
                 glRotatef(-90, 1.0, 0.0, 0.0)

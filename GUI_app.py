@@ -6,6 +6,8 @@ from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from test3 import Draw
+from PIL import Image
+
 ##############
 class App3D:
     def __init__(self):
@@ -93,9 +95,11 @@ class App3D:
         fog.place(relx=0.2, rely=0.07, relheight=0.86)
         """=========================================="""
         # Texture Option (options 2): Texture
+        self.texture_mode = IntVar()
         self.frame_texture = LabelFrame(self.frame_options_2, bg='#EBE5E9', text='Texture')
-        texture = Checkbutton(self.frame_texture, bg='#EBE5E9', text='Texture', variable=var)
+        texture = Checkbutton(self.frame_texture, bg='#EBE5E9', text='Texture', variable=self.texture_mode, onvalue=1, offvalue=-1, command=self.turn_texture, state='disable')
         texture.place(relx=0.2, rely=0.07, relheight=0.86)
+        self.texture_options = [texture]
         """=========================================="""
         # Effect Option (options 2): Effect
         self.frame_effect = LabelFrame(self.frame_options_2, bg='#EBE5E9', text='Effect')
@@ -110,6 +114,9 @@ class App3D:
 
         # Clear
         self.button_clear = Button(self.root, text='CLEAR', command=self.clear_screen)
+        """=========================================="""
+        
+
     """++++++++++++++++++++++++++++++++++++++++++"""
     def screenMain_Load(self):
         self.button_clear.place(relx=0.22, rely=0.05, relwidth=0.05, relheight=0.04)
@@ -294,6 +301,22 @@ class App3D:
         except AttributeError:
             pass
     """++++++++++++++++++++++++++++++++++++++++++"""
+    # TEXTURE components
+    def turn_texture(self):
+        try:
+            self.object_drawing.toggleTextures = self.texture_mode.get()
+            self.object_drawing['cursor'] = 'arrow'
+            if self.object_drawing.toggleTextures:
+                image = Image.open("./textures/brick.jpg")
+                image = image.transpose(Image.FLIP_TOP_BOTTOM)
+                self.object_drawing.imageWHTex = (image.width, image.height)
+                self.object_drawing.imgDataTex = image.convert("RGBA").tobytes()
+                self.object_drawing.textureDraw = glGenTextures(1)
+        except AttributeError:
+            pass
+
+
+    """++++++++++++++++++++++++++++++++++++++++++"""
     def clear_screen(self):
         try:
             self.object_drawing.destroy()
@@ -311,6 +334,10 @@ class App3D:
         for options in self.light_options:
             options.deselect()
             options['state'] = 'disable'
+        for options in self.texture_options:
+            options.deselect()
+            options['state'] = 'disable'
+
     """++++++++++++++++++++++++++++++++++++++++++"""
     def make_object(self, obj, button):
         try:
@@ -323,11 +350,14 @@ class App3D:
             options.deselect()
         for options in self.light_options:
             options.deselect()
+        for options in self.texture_options:
+            options.deselect()
         self.button_object_before = button
         button['highlightbackground'] = '#236aa9'
         button['bg'] = '#c9e2f8'
         self.object_drawing = Draw(obj, False, -1, 'face', self.frame_draw)
         self.object_drawing.animate = 1
+        
         self.object_drawing.place(relwidth = 1, relheight=1)
         self.object_drawing.bind('<B1-Motion>', self.object_drawing.tkSizeObject)
         self.object_drawing['cursor'] = 'cross'
@@ -335,6 +365,8 @@ class App3D:
         for options in self.shape_options:
             options['state'] = 'active'
         for options in self.light_options:
+            options['state'] = 'active'
+        for options in self.texture_options:
             options['state'] = 'active'
         self.shape_options[-1].select()
 
