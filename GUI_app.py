@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter.messagebox as mbox
 from shape import drawObject
 from pyopengltk import OpenGLFrame
+from tkinter.filedialog import Open
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -304,10 +305,14 @@ class App3D:
     # TEXTURE components
     def turn_texture(self):
         try:
+            if self.texture_mode.get() == 1:
+                ftypes = [('JPG', '*.jpg'), ('PNG', '*.png'), ('All files', '*')]
+                dlg = Open(filetypes=ftypes)
+                path = dlg.show()
             self.object_drawing.toggleTextures = self.texture_mode.get()
             self.object_drawing['cursor'] = 'arrow'
-            if self.object_drawing.toggleTextures:
-                image = Image.open("./textures/brick.jpg")
+            if self.object_drawing.toggleTextures == 1:
+                image = Image.open(f'{path}')
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
                 self.object_drawing.imageWHTex = (image.width, image.height)
                 self.object_drawing.imgDataTex = image.convert("RGBA").tobytes()
