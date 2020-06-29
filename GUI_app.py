@@ -3,11 +3,13 @@ import tkinter.messagebox as mbox
 from shape import drawObject
 from pyopengltk import OpenGLFrame
 from tkinter.filedialog import Open
+from tkinter.filedialog import askopenfilename
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
 from test3 import Draw
 from PIL import Image
+import os
 
 ##############
 class App3D:
@@ -306,16 +308,18 @@ class App3D:
     def turn_texture(self):
         try:
             if self.texture_mode.get() == 1:
-                ftypes = [('JPG', '*.jpg'), ('PNG', '*.png'), ('All files', '*')]
-                dlg = Open(filetypes=ftypes)
-                path = dlg.show()
-                self.object_drawing['cursor'] = 'arrow'
+                path_current = os.getcwd()
+                path =  askopenfilename(initialdir = f"{path_current}/textures",title = "Select file",filetypes = (("jpeg files","*.jpg"),("all files","*.*")))
                 self.object_drawing.toggleTextures = 1
+                self.object_drawing['cursor'] = 'arrow'
                 image = Image.open(f'{path}')
                 image = image.transpose(Image.FLIP_TOP_BOTTOM)
                 self.object_drawing.imageWHTex = (image.width, image.height)
                 self.object_drawing.imgDataTex = image.convert("RGBA").tobytes()
                 self.object_drawing.textureDraw = glGenTextures(1)
+            else:
+                self.object_drawing.toggleTextures = -1
+                
         except AttributeError:
             pass
 
