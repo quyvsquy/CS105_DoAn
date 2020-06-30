@@ -61,9 +61,10 @@ class Init_Global_Para(drawObject):
         # self.currentTexture = 0
         ### END TEXTURES  ###
 
-        # ###  ANIMATION  ###
-        # self.toggleAnimation = DEF_ANIMATE
+        ###  EFFECT  ###
         # self.cubeRotation = DEF_CUBE_ROTATION
+        self.toggleRotating = -1
+        self.rotAngle = 0.0
 
     def displayInit(self):
         glClearColor(0.0,0.0,0.0,0.0)

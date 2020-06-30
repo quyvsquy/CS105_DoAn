@@ -13,7 +13,6 @@ class Draw(Init_Global_Para, OpenGLFrame):
         OpenGLFrame.__init__(self, *args, **kw)
         self.object = shapeObject
 
-        self.texture = 0 # save texture to draw
         self.bind('<Triple-Button-2>', self.tkReset)
 
         ### Begin APHIN ###
@@ -152,6 +151,10 @@ class Draw(Init_Global_Para, OpenGLFrame):
                 glRotatef(self.moveR[0], 0, 1, 0)   
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
 
+        if self.toggleRotating != -1:
+            glRotatef(self.rotAngle, 1.0, 1.0, 1.0)
+            self.rotAngle += 0.25
+            
         glColor3fv([1, 1, 1])
         if self.object == 'cube':
             self.make_cube(self.sizeObject * 0.3)
@@ -167,7 +170,6 @@ class Draw(Init_Global_Para, OpenGLFrame):
             self.make_torus(self.sizeObject * 0.3, self.sizeObject * 3 * 0.3)
         elif self.object == 'cone':
             self.make_cone(self.sizeObject * 0.3, self.sizeObject * 2 * 0.3)
-        # glRotatef(self.rota, 1.0, 1.0, 1.0)
         # self.make_cube(self.sizeObject)
         # self.make_box(self.sizeObject, self.sizeObject*2, self.sizeObject*1.5)
         # self.make_sphere(self.sizeObject)

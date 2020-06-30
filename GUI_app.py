@@ -105,9 +105,11 @@ class App3D:
         self.texture_options = [texture]
         """=========================================="""
         # Effect Option (options 2): Effect
+        self.rotating_mode = IntVar()
         self.frame_effect = LabelFrame(self.frame_options_2, bg='#EBE5E9', text='Effect')
-        effect = Checkbutton(self.frame_effect, bg='#EBE5E9', text='Rotating', variable=var)
+        effect = Checkbutton(self.frame_effect, bg='#EBE5E9', text='Rotating', variable=self.rotating_mode, onvalue=1, offvalue=-1, command=self.turn_rotating, state='disable')
         effect.place(relx=0.2, rely=0.07, relheight=0.86)
+        self.rotating_options = [effect]
         """=========================================="""
         # Draw frame
         self.frame_draw = Frame(self.root, bg='#000000')  # Draw here
@@ -323,6 +325,11 @@ class App3D:
         except AttributeError:
             pass
 
+    def turn_rotating(self):
+        try:
+            self.object_drawing.toggleRotating = self.rotating_mode.get()
+        except AttributeError:
+            pass
 
     """++++++++++++++++++++++++++++++++++++++++++"""
     def clear_screen(self):
@@ -345,6 +352,10 @@ class App3D:
         for options in self.texture_options:
             options.deselect()
             options['state'] = 'disable'
+        for options in self.rotating_options:
+            options.deselect()
+            options['state'] = 'disable'
+            
 
     """++++++++++++++++++++++++++++++++++++++++++"""
     def make_object(self, obj, button):
@@ -360,6 +371,9 @@ class App3D:
             options.deselect()
         for options in self.texture_options:
             options.deselect()
+        for options in self.rotating_options:
+            options.deselect()    
+            
         self.button_object_before = button
         button['highlightbackground'] = '#236aa9'
         button['bg'] = '#c9e2f8'
@@ -375,6 +389,8 @@ class App3D:
         for options in self.light_options:
             options['state'] = 'active'
         for options in self.texture_options:
+            options['state'] = 'active'
+        for options in self.rotating_options:
             options['state'] = 'active'
         self.shape_options[-1].select()
 
