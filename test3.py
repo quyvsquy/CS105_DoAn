@@ -182,7 +182,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
     def tkResize(self, evt):
         self.width, self.height = evt.width, evt.height
-        self.asp =  self.width/self.height if self.height > 0 else 1
+        # self.asp =  self.width/self.height if self.height > 0 else 1
         if self.winfo_ismapped():
             glViewport(0, 0, self.width, self.height)
             self.initgl()

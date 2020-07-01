@@ -24,20 +24,20 @@ class Init_Global_Para(drawObject):
         # Perspective
         self.toggleProjection_Perspective = 1 # 0 is off; 1 is on
         
-        # self.fov = DoubleVar() # field of view for perspective 
-        # self.asp = DoubleVar()  # aspect ratio; field of view for perspective
-        # self.zNear = DoubleVar() # field of view for perspective
-        # self.zFar = DoubleVar() # field of view for perspective
+        self.fov = DoubleVar() # field of view for perspective 
+        self.asp = DoubleVar()  # aspect ratio; field of view for perspective
+        self.zNear = DoubleVar() # field of view for perspective
+        self.zFar = DoubleVar() # field of view for perspective
         # print(self.fov)
-        # self.fov.set(45) # field of view for perspective 
-        # self.asp.set(1)  # aspect ratio;field of view for perspective
-        # self.zNear.set(1.0) # field of view for perspective
-        # self.zFar.set(100.0) # field of view for perspective
+        self.fov.set(45.0) # field of view for perspective 
+        self.asp.set(1.0)  # aspect ratio;field of view for perspective
+        self.zNear.set(1.0) # field of view for perspective
+        self.zFar.set(100.0) # field of view for perspective
 
-        self.fov = 45 # field of view for perspective 
-        self.asp = 1  # aspect ratio;field of view for perspective
-        self.zNear = 1 # field of view for perspective
-        self.zFar = 100 # field of view for perspective
+        # self.fov = 45 # field of view for perspective 
+        # self.asp = 1  # aspect ratio;field of view for perspective
+        # self.zNear = 1 # field of view for perspective
+        # self.zFar = 100 # field of view for perspective
         
         
         #------------#
@@ -48,9 +48,9 @@ class Init_Global_Para(drawObject):
         self.eyeX = DoubleVar()
         self.eyeY = DoubleVar()
         self.eyeZ = DoubleVar()
-        self.eyeX.set(0)
-        self.eyeY.set(0)
-        self.eyeZ.set(10)
+        self.eyeX.set(0.0)
+        self.eyeY.set(0.0)
+        self.eyeZ.set(10.0)
 
         self.centerX = DoubleVar()
         self.centerY = DoubleVar()
@@ -115,8 +115,7 @@ class Init_Global_Para(drawObject):
     def displayProject(self, fov, asp, zNear, zFar):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        print(fov)
-        gluPerspective(fov, asp, zNear, zFar) #void gluPerspective(	GLdouble fovy, GLdouble aspect,GLdouble zNear, 	GLdouble zFar);
+        gluPerspective(fov.get(), asp.get(), zNear.get(), zFar.get()) #void gluPerspective(	GLdouble fovy, GLdouble aspect,GLdouble zNear, 	GLdouble zFar);
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
