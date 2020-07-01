@@ -11,13 +11,17 @@ from PIL import Image
 import os
 
 
+def exit(obj):
+    obj.destroy()
+
 class App3D:
     def __init__(self):
         self.root = Tk()
         self.root.attributes("-fullscreen", True)
 
         self.object_drawing = None
-        
+        self.board_using = []
+
         # Objects Frame --> contains objects buttons 
         self.frame_objects = Frame(self.root, bg='#EBE5E9')
         self.frame_objects.place(relx=0.01, rely=0.1, relwidth=0.08, relheight=0.89)
@@ -59,27 +63,35 @@ class App3D:
         # SHAPE Options: Line, Point, Face
         self.shape_var = StringVar()
         self.frame_shape = LabelFrame(self.frame_options, bg='#EBE5E9', text='Shape')
+        
         point = Radiobutton(self.frame_shape, bg='#EBE5E9', state='disable', text="Point", variable=self.shape_var, value='points', command=self.transfer_points)
         point.place(relx=0.2, rely=0.07, relheight=0.2)
+        
         line = Radiobutton(self.frame_shape, bg='#EBE5E9', state='disable', text="Line", variable=self.shape_var, value='lines', command=self.transfer_lines)            
         line.place(relx=0.2, rely = 0.4, relheight=0.2)
+        
         face = Radiobutton(self.frame_shape, bg='#EBE5E9', state='disable', text="Face", variable=self.shape_var, value='face', command=self.transfer_face)
         face.place(relx=0.2, rely = 0.73, relheight=0.2)
+        
         self.shape_options = [point, line, face]
-
         """-----------------------------------------"""
         # PROJECTIONS Options (options 2): Perspective, Look At (Eye), Look At (Center), Look At(Up)
         self.projection_var = IntVar()
         self.frame_projection = LabelFrame(self.frame_options, bg='#EBE5E9', text='Projection')
-        self.board_using = []
-        perspective = Radiobutton(self.frame_projection, bg='#EBE5E9', variable=self.projection_var, value=1, text="Perspective", command=self.load_projection_board)
+        
+        perspective = Radiobutton(self.frame_projection, bg='#EBE5E9', variable=self.projection_var, value=1, text="Perspective", command=self.load_projection_board, state='disable')
         perspective.place(relx=0.2, rely=0.07, relheight=0.2)
-        lookat_eye = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Eye)", variable=self.projection_var, value=2, command=self.load_projection_board)
+        
+        lookat_eye = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Eye)", variable=self.projection_var, value=2, command=self.load_projection_board, state='disable')
         lookat_eye.place(relx=0.2, rely=0.29, relheight=0.2)
-        lookat_center = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Center)", variable=self.projection_var, value=3, command=self.load_projection_board)
+        
+        lookat_center = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Center)", variable=self.projection_var, value=3, command=self.load_projection_board, state='disable')
         lookat_center.place(relx=0.2, rely=0.51, relheight=0.2)
-        lookat_up = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Up)", variable=self.projection_var, value=4, command=self.load_projection_board)
+        
+        lookat_up = Radiobutton(self.frame_projection, bg='#EBE5E9', text="Look At (Up)", variable=self.projection_var, value=4, command=self.load_projection_board, state='disable')
         lookat_up.place(relx=0.2, rely=0.73, relheight=0.2)
+        
+        self.projection_options = [perspective, lookat_eye, lookat_center, lookat_up]
         """-----------------------------------------"""
         # LIGHT Options (options 2): Light, Light Source, Shadow
         self.light_mode = IntVar()
@@ -198,89 +210,99 @@ class App3D:
     # Load scale board when click on scale button
     def load_scale_board(self):
         try:
-            self.scale_mode += 1
-            if self.scale_mode % 2 != 0:
-                self.object_drawing.aphinType = 0
-                self.object_drawing.isScaleFirst = 1
-                # Frame: scale board
-                self.frame_scale_board = LabelFrame(self.object_drawing, text='Scale Ratio', cursor='arrow')
-                self.frame_scale_board.place(relx=0.01, rely=0.7, relwidth=0.34, relheight=0.29)
+            for board in self.board_using:
+                board.destroy()
+            self.aphinType_pre = self.object_drawing.aphinType
+            self.object_drawing.aphinType = 0
+            self.object_drawing.isScaleFirst = 1
+            # Frame: scale board
+            self.frame_scale_board = Frame(self.object_drawing, cursor='arrow')
+            self.frame_scale_board.place(relx=0.01, rely=0.67, relwidth=0.34, relheight=0.32)
+            
+            self.board_using.append(self.frame_scale_board)
+            # Label: Name of the Board
+            label_name = Label(self.frame_scale_board, bg='#81dbd0', justify='left', text='Scale Board')
+            label_name.place(relwidth=1, relheight=0.1)
 
-                # Button --> Set as default
-                button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=self.set_as_default)
-                button_Set_as_default.place(relx=0.05, rely=0.05, relwidth=0.39)
+            # Button --> Exit
+            button_exit = Button(self.frame_scale_board, text='X', command=self.exit_scale_mode)
+            button_exit.place(relx=0.91, relwidth=0.09, relheight=0.1)
 
-                # Buton: Save
-                button_Save = Button(self.frame_scale_board, text='Save')
-                button_Save.place(relx=0.45, rely=0.05, relwidth=0.245)
+            pos_buttons_y = 0.18
+            # Button --> Set as default
+            button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=self.set_as_default)
+            button_Set_as_default.place(relx=0.05, rely=pos_buttons_y, relwidth=0.39)
 
-                # Button: Cancel
-                button_Cancel = Button(self.frame_scale_board, text='Cancel')
-                button_Cancel.place(relx=0.705, rely=0.05, relwidth=0.245)
+            # Buton: Save
+            button_Save = Button(self.frame_scale_board, text='Save')
+            button_Save.place(relx=0.45, rely=pos_buttons_y, relwidth=0.245)
 
-                # Line black
-                frame_LineBlack = Frame(self.frame_scale_board, bg='#000000')
-                frame_LineBlack.place(relx=0.52, rely=0.34, relheight=0.7)
+            # Button: Cancel
+            button_Cancel = Button(self.frame_scale_board, text='Cancel')
+            button_Cancel.place(relx=0.705, rely=pos_buttons_y, relwidth=0.245)
 
-                # Entries --> Fill X, Y, Z ratio
-                entry_X = Entry(self.frame_scale_board)
-                entry_X.place(relx=0.55, rely=0.37, relwidth=0.2, relheight=0.11)
+            # Labels --> Show text: X, Y, X
+            pos_labels_x = 0.1
+            pos_labels_y = 0.43
+            label_X = Label(self.frame_scale_board, text='X')
+            label_X.place(relx=pos_labels_x, rely=pos_labels_y)
 
-                entry_Y = Entry(self.frame_scale_board)
-                entry_Y.place(relx=0.55, rely=0.62, relwidth=0.2, relheight=0.11)
+            label_Y = Label(self.frame_scale_board, text='Y')
+            label_Y.place(relx=pos_labels_x, rely=pos_labels_y + 0.24)
 
-                entry_Z = Entry(self.frame_scale_board)
-                entry_Z.place(relx=0.55, rely=0.87, relwidth=0.2, relheight=0.11)
+            label_Z = Label(self.frame_scale_board, text='Z')
+            label_Z.place(relx=pos_labels_x, rely=pos_labels_y + 0.47)
 
-                self.entries_list = [entry_X, entry_Y, entry_Z]    
+            # Scale bars --> Show scale bars: X, Y, Z
+            scale_bars_x = 0.2
+            scale_bars_y = 0.34
+            scaleX = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[0], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleX.set(self.object_drawing.varScale[0].get())
+            scaleX.place(relx=scale_bars_x, rely=scale_bars_y, relheight=0.2)
 
-                # Buttons --> Get X, Y, Z from entries and set 
-                button_Set_X = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[0], 'X'))
-                button_Set_X.place(relx=0.8, rely=0.36, relwidth=0.19, relheight=0.12)
+            scaleY = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[1], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleY.set(self.object_drawing.varScale[1].get())
+            scaleY.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 + 0.03, relheight=0.2)
 
-                button_Set_Y = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[1], 'Y'))
-                button_Set_Y.place(relx=0.8, rely=0.61, relwidth=0.19, relheight=0.12)
+            scaleZ = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[2], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleZ.set(self.object_drawing.varScale[2].get())
+            scaleZ.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 * 2 + 0.03 * 2, relheight=0.2)
 
-                button_Set_Z = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[-1], 'Z'))
-                button_Set_Z.place(relx=0.8, rely=0.86, relwidth=0.19, relheight=0.12)
+            self.scale_ratio = [scaleX, scaleY, scaleZ]
 
-                # Labels --> Show text: X, Y, X
-                pos_labels_x = 0.1
-                label_X = Label(self.frame_scale_board, text='X')
-                label_X.place(relx=pos_labels_x, rely=0.38)
+            # Line black
+            frame_LineBlack = Frame(self.frame_scale_board, bg='#000000')
+            frame_LineBlack.place(relx=0.52, rely=0.4, relheight=0.6)
 
-                label_Y = Label(self.frame_scale_board, text='Y')
-                label_Y.place(relx=pos_labels_x, rely=0.62)
+            # Entries --> Fill X, Y, Z ratio
+            entry_X = Entry(self.frame_scale_board)
+            entry_X.place(relx=0.55, rely=0.43, relwidth=0.2, relheight=0.1)
 
-                label_Z = Label(self.frame_scale_board, text='Z')
-                label_Z.place(relx=pos_labels_x, rely=0.87)
+            entry_Y = Entry(self.frame_scale_board)
+            entry_Y.place(relx=0.55, rely=0.66, relwidth=0.2, relheight=0.1)
 
-                # Scale bars --> Show scale bars: X, Y, Z
-                pos_scale_bars_x = 0.2
-                scaleX = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[0], orient='horizontal', from_=0, to=10, resolution=0.01)
-                scaleX.set(self.object_drawing.varScale[0].get())
-                scaleX.place(relx=pos_scale_bars_x, rely=0.25, relheight=0.24)
+            entry_Z = Entry(self.frame_scale_board)
+            entry_Z.place(relx=0.55, rely=0.88, relwidth=0.2, relheight=0.1)
 
-                scaleY = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[1], orient='horizontal', from_=0, to=10, resolution=0.01)
-                scaleY.set(self.object_drawing.varScale[1].get())
-                scaleY.place(relx=pos_scale_bars_x, rely=0.5, relheight=0.24)
+            self.entries_list = [entry_X, entry_Y, entry_Z]    
 
-                scaleZ = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[2], orient='horizontal', from_=0, to=10, resolution=0.01)
-                scaleZ.set(self.object_drawing.varScale[2].get())
-                scaleZ.place(relx=pos_scale_bars_x, rely=0.75, relheight=0.24)
+            # Buttons --> Get X, Y, Z from entries and set 
+            button_Set_X = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[0], 'X'))
+            button_Set_X.place(relx=0.8, rely=0.43, relwidth=0.19, relheight=0.1)
 
-                self.aphinType_pre = self.object_drawing.aphinType
-                self.scale_ratio = [scaleX, scaleY, scaleZ]
-                self.scale_mode = True
-            if self.scale_mode % 2 == 0:
-                try:
-                    self.object_drawing.aphinType = self.aphinType_pre
-                    self.frame_scale_board.destroy()
-                except AttributeError:
-                    pass
+            button_Set_Y = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[1], 'Y'))
+            button_Set_Y.place(relx=0.8, rely=0.66, relwidth=0.19, relheight=0.1)
+
+            button_Set_Z = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[-1], 'Z'))
+            button_Set_Z.place(relx=0.8, rely=0.88, relwidth=0.19, relheight=0.1)
         except AttributeError:
             pass
-    
+
+    def exit_scale_mode(self):
+        self.frame_scale_board.destroy()
+        if self.aphinType_pre != -1:
+            self.object_drawing.aphinType = self.aphinType_pre
+
     # Set from keyboard
     def set_scale_ratio(self, entry, axis):
         tmp = entry.get()
@@ -333,168 +355,198 @@ class App3D:
                 board.destroy()
             if self.projection_var.get() == 1:
                 # Frame: perspective board
-                self.frame_perspective_board = LabelFrame(self.object_drawing, text='Perspective', cursor='arrow')
+                self.frame_perspective_board = Frame(self.object_drawing, cursor='arrow')
                 self.frame_perspective_board.place(relx=0.01, rely=0.6, relwidth=0.34, relheight=0.39)
+               
                 self.board_using.append(self.frame_perspective_board)
 
+                # Label: Name of the Board      
+                label_name = Label(self.frame_perspective_board, bg='#81dbd0', text='Perspecive', justify='left')
+                label_name.place(relwidth=1, relheight=0.1)
+
+                # Button --> Exit
+                button_exit = Button(self.frame_perspective_board, text='X', command=self.exit_projective_mode)
+                button_exit.place(relx=0.91, relwidth=0.09, relheight=0.1)
+
+                buttons_y = 0.15
                 # Button: Set as default --> Set as default
-                button_Set_as_default = Button(self.frame_perspective_board, text='Set as default')
-                button_Set_as_default.place(relx=0.05, rely=0.05, relwidth=0.39)
+                button_Set_as_default = Button(self.frame_perspective_board, text='Set as default', command=self.set_as_default_)
+                button_Set_as_default.place(relx=0.05, rely=buttons_y, relwidth=0.39)
 
                 # Buton: Save
                 button_Save = Button(self.frame_perspective_board, text='Save')
-                button_Save.place(relx=0.45, rely=0.05, relwidth=0.245)
+                button_Save.place(relx=0.45, rely=buttons_y, relwidth=0.245)
 
                 # Button: Cancel
                 button_Cancel = Button(self.frame_perspective_board, text='Cancel')
-                button_Cancel.place(relx=0.705, rely=0.05, relwidth=0.245)
+                button_Cancel.place(relx=0.705, rely=buttons_y, relwidth=0.245)
 
                 # Labels --> Show text: Fovy, Aspect, Near, Far
-                pos_labels_x = 0.02
+                pos_labels_x = 0.04
                 label_Fovy = Label(self.frame_perspective_board, text='Fovy')
-                label_Fovy.place(relx=pos_labels_x, rely=0.27, relheight=0.1)
+                label_Fovy.place(relx=pos_labels_x, rely=0.34, relheight=0.1)
 
                 label_Aspect = Label(self.frame_perspective_board, text='Aspect')
-                label_Aspect.place(relx=pos_labels_x, rely=0.47, relheight=0.1)
+                label_Aspect.place(relx=pos_labels_x, rely=0.52, relheight=0.1)
 
                 label_Near = Label(self.frame_perspective_board, text='Near')
-                label_Near.place(relx=pos_labels_x, rely=0.67, relheight=0.1)
+                label_Near.place(relx=pos_labels_x, rely=0.7, relheight=0.1)
 
                 label_Far = Label(self.frame_perspective_board, text='Far')
-                label_Far.place(relx=pos_labels_x, rely=0.87, relheight=0.1)
+                label_Far.place(relx=pos_labels_x, rely=0.88, relheight=0.1)
 
                 # Scale bars --> Show scale bars: Fovy, Aspect, Near, Far
                 pos_scale_bars_x = 0.2
                 scale_Fovy = Scale(self.frame_perspective_board, variable=self.object_drawing.fov, orient='horizontal', from_=0, to=360, resolution=5)
-                scale_Fovy.set(self.object_drawing.fov)
-                scale_Fovy.place(relx=pos_scale_bars_x, rely=0.2, relheight=0.2)
+                scale_Fovy.set(self.object_drawing.fov.get())
+                scale_Fovy.place(relx=pos_scale_bars_x, rely=0.28, relheight=0.2)
 
                 scale_Aspect = Scale(self.frame_perspective_board, variable=self.object_drawing.asp, orient='horizontal', from_=0, to=1, resolution=0.01)
-                scale_Aspect.set(self.object_drawing.asp)
-                scale_Aspect.place(relx=pos_scale_bars_x, rely=0.4, relheight=0.2)
+                scale_Aspect.set(self.object_drawing.asp.get())
+                scale_Aspect.place(relx=pos_scale_bars_x, rely=0.46, relheight=0.2)
 
                 scale_Near = Scale(self.frame_perspective_board, variable=self.object_drawing.zNear, orient='horizontal', from_=1, to=10, resolution=0.01)
-                scale_Near.set(self.object_drawing.zNear)
-                scale_Near.place(relx=pos_scale_bars_x, rely=0.6, relheight=0.2)
+                scale_Near.set(self.object_drawing.zNear.get())
+                scale_Near.place(relx=pos_scale_bars_x, rely=0.64, relheight=0.2)
 
                 scale_Far = Scale(self.frame_perspective_board, variable=self.object_drawing.zFar, orient='horizontal', from_=1, to=100, resolution=0.01)
-                scale_Far.set(self.object_drawing.zFar)
-                scale_Far.place(relx=pos_scale_bars_x, rely=0.8, relheight=0.2)
+                scale_Far.set(self.object_drawing.zFar.get())
+                scale_Far.place(relx=pos_scale_bars_x, rely=0.82, relheight=0.2)
 
                 self.scale_ratio = [scale_Fovy, scale_Aspect, scale_Near, scale_Far]
 
                 # Line black
                 frame_LineBlack = Frame(self.frame_perspective_board, bg='#000000')
-                frame_LineBlack.place(relx=0.52, rely=0.25, relheight=0.75)
+                frame_LineBlack.place(relx=0.52, rely=0.3, relheight=0.7)
 
                 # Entries --> Fill Fovy, Aspect, Near, Far ratio
                 entry_Fovy = Entry(self.frame_perspective_board)
-                entry_Fovy.place(relx=0.55, rely=0.27, relwidth=0.2, relheight=0.1)
+                entry_Fovy.place(relx=0.55, rely=0.34, relwidth=0.2, relheight=0.1)
 
                 entry_Aspect = Entry(self.frame_perspective_board)
-                entry_Aspect.place(relx=0.55, rely=0.47, relwidth=0.2, relheight=0.1)
+                entry_Aspect.place(relx=0.55, rely=0.52, relwidth=0.2, relheight=0.1)
 
                 entry_Near = Entry(self.frame_perspective_board)
-                entry_Near.place(relx=0.55, rely=0.67, relwidth=0.2, relheight=0.1)
+                entry_Near.place(relx=0.55, rely=0.7, relwidth=0.2, relheight=0.1)
 
                 entry_Far = Entry(self.frame_perspective_board)
-                entry_Far.place(relx=0.55, rely=0.87, relwidth=0.2, relheight=0.1)
+                entry_Far.place(relx=0.55, rely=0.88, relwidth=0.2, relheight=0.1)
 
                 self.entries_list = [entry_Fovy, entry_Aspect, entry_Near, entry_Far]    
 
                 # Buttons --> Get and Set: Fovy, Aspect, Near, Far from entries  
-                button_Set_Fovy = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_perspecive_ratio(self.entries_list[0], 'fovy'))
-                button_Set_Fovy.place(relx=0.8, rely=0.27, relwidth=0.19, relheight=0.1)
+                button_Set_Fovy = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[0], 'fovy'))
+                button_Set_Fovy.place(relx=0.8, rely=0.34, relwidth=0.19, relheight=0.1)
 
-                button_Set_Aspect = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_perspecive_ratio(self.entries_list[1], 'aspect'))
-                button_Set_Aspect.place(relx=0.8, rely=0.47, relwidth=0.19, relheight=0.1)
+                button_Set_Aspect = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[1], 'aspect'))
+                button_Set_Aspect.place(relx=0.8, rely=0.52, relwidth=0.19, relheight=0.1)
 
-                button_Set_Near = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_perspecive_ratio(self.entries_list[2], 'near'))
-                button_Set_Near.place(relx=0.8, rely=0.67, relwidth=0.19, relheight=0.1)
+                button_Set_Near = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[2], 'near'))
+                button_Set_Near.place(relx=0.8, rely=0.7, relwidth=0.19, relheight=0.1)
 
-                button_Set_Far = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_perspecive_ratio(self.entries_list[-1], 'far'))
-                button_Set_Far.place(relx=0.8, rely=0.87, relwidth=0.19, relheight=0.1)      
+                button_Set_Far = Button(self.frame_perspective_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[-1], 'far'))
+                button_Set_Far.place(relx=0.8, rely=0.88, relwidth=0.19, relheight=0.1)      
             else:
-                self.frame_scale_board = LabelFrame(self.object_drawing, text='Scale Ratio', cursor='arrow')
-                self.frame_scale_board.place(relx=0.01, rely=0.7, relwidth=0.34, relheight=0.29)
+                # Frame: scale board
+                self.frame_scale_board = Frame(self.object_drawing, cursor='arrow')
+                self.frame_scale_board.place(relx=0.01, rely=0.67, relwidth=0.34, relheight=0.32)
+                
                 self.board_using.append(self.frame_scale_board)
+                
+                # Label: Name of the Board
+                label_name = Label(self.frame_scale_board, bg='#81dbd0', justify='left')
+                label_name.place(relwidth=1, relheight=0.1)
+
+                # Button --> Exit
+                button_exit = Button(self.frame_scale_board, text='X', command=self.exit_projective_mode)
+                button_exit.place(relx=0.91, relwidth=0.09, relheight=0.1)
+
+                pos_buttons_y = 0.18
                 # Button --> Set as default
-                button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=self.set_as_default)
-                button_Set_as_default.place(relx=0.05, rely=0.05, relwidth=0.39)
+                button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=lambda:self.set_as_default_(self.projection_var.get()))
+                button_Set_as_default.place(relx=0.05, rely=pos_buttons_y, relwidth=0.39)
 
                 # Buton: Save
-                button_Save = Button(self.frame_scale_board, text='Save', command=self.print)
-                button_Save.place(relx=0.45, rely=0.05, relwidth=0.245)
+                button_Save = Button(self.frame_scale_board, text='Save')
+                button_Save.place(relx=0.45, rely=pos_buttons_y, relwidth=0.245)
 
                 # Button: Cancel
                 button_Cancel = Button(self.frame_scale_board, text='Cancel')
-                button_Cancel.place(relx=0.705, rely=0.05, relwidth=0.245)
+                button_Cancel.place(relx=0.705, rely=pos_buttons_y, relwidth=0.245)
+
+                # Labels --> Show text: X, Y, X
+                labels_x = 0.1
+                labels_y = 0.43
+                label_X = Label(self.frame_scale_board, text='X')
+                label_X.place(relx=labels_x, rely=labels_y)
+
+                label_Y = Label(self.frame_scale_board, text='Y')
+                label_Y.place(relx=labels_x, rely=labels_y + 0.24)
+
+                label_Z = Label(self.frame_scale_board, text='Z')
+                label_Z.place(relx=labels_x, rely=labels_y + 0.47)
+
+                # Scale bars --> Show scale bars: X, Y, Z
+                scale_bars_x = 0.2
+                scale_bars_y = 0.34
+                if self.projection_var.get() == 2:
+                    label_name['text'] = 'Look at (Eye)'
+                    var = [self.object_drawing.eyeX, self.object_drawing.eyeY, self.object_drawing.eyeZ]
+                    boundary = [[0, 1], [0, 1], [0, 10]]
+                elif self.projection_var.get() == 3:
+                    label_name['text'] = 'Look at (Center)'
+                    var = [self.object_drawing.centerX, self.object_drawing.centerY, self.object_drawing.centerZ]
+                    boundary = [[0, 1], [0, 1], [0, 1]]
+                else:
+                    label_name['text'] = 'Look at (Up)'
+                    var = [self.object_drawing.upX, self.object_drawing.upY, self.object_drawing.upZ]
+                    boundary = [[0, 1], [0, 1], [0, 1]]
+
+                scaleX = Scale(self.frame_scale_board, variable=var[0], orient='horizontal', from_=boundary[0][0], to=boundary[0][1], resolution=0.01)
+                scaleX.set(var[0].get())
+                scaleX.place(relx=scale_bars_x, rely=scale_bars_y, relheight=0.2)
+
+                scaleY = Scale(self.frame_scale_board, variable=var[1], orient='horizontal', from_=boundary[1][0], to=boundary[1][1], resolution=0.01)
+                scaleY.set(var[1].get())
+                scaleY.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 + 0.03, relheight=0.2)
+
+                scaleZ = Scale(self.frame_scale_board, variable=var[2], orient='horizontal', from_=boundary[2][0], to=boundary[2][1], resolution=0.01)
+                scaleZ.set(var[2].get())
+                scaleZ.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 * 2 + 0.03 * 2, relheight=0.2)
+
+                self.scale_ratio = [scaleX, scaleY, scaleZ]
 
                 # Line black
                 frame_LineBlack = Frame(self.frame_scale_board, bg='#000000')
-                frame_LineBlack.place(relx=0.52, rely=0.34, relheight=0.7)
+                frame_LineBlack.place(relx=0.52, rely=0.4, relheight=0.6)
 
                 # Entries --> Fill X, Y, Z ratio
                 entry_X = Entry(self.frame_scale_board)
-                entry_X.place(relx=0.55, rely=0.37, relwidth=0.2, relheight=0.11)
+                entry_X.place(relx=0.55, rely=0.43, relwidth=0.2, relheight=0.1)
 
                 entry_Y = Entry(self.frame_scale_board)
-                entry_Y.place(relx=0.55, rely=0.62, relwidth=0.2, relheight=0.11)
+                entry_Y.place(relx=0.55, rely=0.66, relwidth=0.2, relheight=0.1)
 
                 entry_Z = Entry(self.frame_scale_board)
-                entry_Z.place(relx=0.55, rely=0.87, relwidth=0.2, relheight=0.11)
+                entry_Z.place(relx=0.55, rely=0.88, relwidth=0.2, relheight=0.1)
 
                 self.entries_list = [entry_X, entry_Y, entry_Z]    
 
                 # Buttons --> Get X, Y, Z from entries and set 
-                button_Set_X = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[0], 'X'))
-                button_Set_X.place(relx=0.8, rely=0.36, relwidth=0.19, relheight=0.12)
+                button_Set_X = Button(self.frame_scale_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[0], 'X'))
+                button_Set_X.place(relx=0.8, rely=0.43, relwidth=0.19, relheight=0.1)
 
-                button_Set_Y = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[1], 'Y'))
-                button_Set_Y.place(relx=0.8, rely=0.61, relwidth=0.19, relheight=0.12)
+                button_Set_Y = Button(self.frame_scale_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[1], 'Y'))
+                button_Set_Y.place(relx=0.8, rely=0.66, relwidth=0.19, relheight=0.1)
 
-                button_Set_Z = Button(self.frame_scale_board, text='Set', command=lambda:self.set_scale_ratio(self.entries_list[-1], 'Z'))
-                button_Set_Z.place(relx=0.8, rely=0.86, relwidth=0.19, relheight=0.12)
-
-                # Labels --> Show text: X, Y, X
-                pos_labels_x = 0.1
-                label_X = Label(self.frame_scale_board, text='X')
-                label_X.place(relx=pos_labels_x, rely=0.38)
-
-                label_Y = Label(self.frame_scale_board, text='Y')
-                label_Y.place(relx=pos_labels_x, rely=0.62)
-
-                label_Z = Label(self.frame_scale_board, text='Z')
-                label_Z.place(relx=pos_labels_x, rely=0.87)
-
-                # Scale bars --> Show scale bars: X, Y, Z
-                pos_scale_bars_x = 0.2
-                if self.projection_var.get() == 2:
-                    var = [self.object_drawing.eyeX, self.object_drawing.eyeY, self.object_drawing.eyeZ]
-                    boundary = [[0, 1], [0, 1], [0, 10]]
-                elif self.projection_var.get() == 3:
-                    var = [self.object_drawing.centerX, self.object_drawing.centerY, self.object_drawing.centerZ]
-                    boundary = [[0, 1], [0, 1], [0, 1]]
-                else:
-                    var = [self.object_drawing.upX, self.object_drawing.upY, self.object_drawing.upZ]
-                    boundary = [[0, 360], [0, 360], [0, 360]]
-
-                scaleX = Scale(self.frame_scale_board, variable=var[0], orient='horizontal', from_=boundary[0][0], to=boundary[0][1], resolution=0.01)
-                scaleX.set(var[0].get())
-                scaleX.place(relx=pos_scale_bars_x, rely=0.25, relheight=0.24)
-
-                scaleY = Scale(self.frame_scale_board, variable=var[1], orient='horizontal', from_=boundary[1][0], to=boundary[1][1], resolution=0.01)
-                scaleY.set(var[1].get())
-                scaleY.place(relx=pos_scale_bars_x, rely=0.5, relheight=0.24)
-
-                scaleZ = Scale(self.frame_scale_board, variable=var[2], orient='horizontal', from_=boundary[2][0], to=boundary[2][1], resolution=0.01)
-                scaleZ.set(var[2].get())
-                scaleZ.place(relx=pos_scale_bars_x, rely=0.75, relheight=0.24)
+                button_Set_Z = Button(self.frame_scale_board, text='Set', command=lambda:self.set_projection_ratio(self.entries_list[-1], 'Z'))
+                button_Set_Z.place(relx=0.8, rely=0.88, relwidth=0.19, relheight=0.1)
                 
-    def print(self):
-        print(self.object_drawing.eyeX.get())
+    def exit_projective_mode(self):
+        for board in self.board_using:
+            board.destroy()
 
-    def set_perspecive_ratio(self, entry, axis):
+    def set_projection_ratio(self, entry, axis):
         tmp = entry.get()
         if axis == 'fovy':
             if float(tmp) < 0 or float(tmp) > 360:
@@ -515,11 +567,48 @@ class App3D:
                 mbox.showerror("Error", "Ratio should be between 0 and 10!")
             else:
                 self.scale_ratio[2].set(tmp)
-        else:
+        elif axis == 'far':
             if float(tmp) < 0 or float(tmp) > 100:
                 mbox.showerror("Error", "Ratio should be between 0 and 100!")
             else:
                 self.scale_ratio[-1].set(tmp)
+        elif axis == 'X':
+            if float(tmp) < 0 or float(tmp) > 1:
+                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            else:
+                self.scale_ratio[0].set(tmp)
+        elif axis == 'Y':
+            if float(tmp) < 0 or float(tmp) > 1:
+                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            else:
+                self.scale_ratio[1].set(tmp)
+        else:
+            if float(tmp) < 0 or float(tmp) > 1:
+                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            else:
+                self.scale_ratio[-1].set(tmp)
+    
+
+    def set_as_default_(self, attribute=None):
+        if len(self.scale_ratio) == 4:
+            self.scale_ratio[0].set(45)
+            self.scale_ratio[1].set(1)
+            self.scale_ratio[2].set(1)
+            self.scale_ratio[-1].set(100)
+        else:
+            if attribute == 2:
+                self.scale_ratio[0].set(0)
+                self.scale_ratio[1].set(0)
+                self.scale_ratio[2].set(10)
+            elif attribute == 3:
+                self.scale_ratio[0].set(0)
+                self.scale_ratio[1].set(0)
+                self.scale_ratio[2].set(0)
+            elif attribute == 4:
+                self.scale_ratio[0].set(0)
+                self.scale_ratio[1].set(1)
+                self.scale_ratio[2].set(0)
+
     """++++++++++++++++++++++++++++++++++++++++++"""
     # LIGHT functions
     def turn_light(self):
@@ -575,6 +664,9 @@ class App3D:
         for options in self.shape_options:
             options.deselect()
             options['state'] = 'disable'
+        for options in self.projection_options:
+            options.deselect()
+            options['state'] = 'disable'
         for options in self.light_options:
             options.deselect()
             options['state'] = 'disable'
@@ -594,6 +686,8 @@ class App3D:
             pass
         for options in self.shape_options:
             options.deselect()
+        for options in self.projection_options:
+            options.deselect()
         for options in self.light_options:
             options.deselect()
         for options in self.texture_options:
@@ -612,6 +706,8 @@ class App3D:
         self.object_drawing['cursor'] = 'cross'
         self.scale_mode = 0
         for options in self.shape_options:
+            options['state'] = 'active'
+        for options in self.projection_options:
             options['state'] = 'active'
         for options in self.light_options:
             options['state'] = 'active'
