@@ -18,6 +18,8 @@ class Draw(Init_Global_Para, OpenGLFrame):
         ### Begin APHIN ###
         self.aphinType = -1 # 0 is Scale; 1 is Rotate; 2 is Translate
         self.varScale = (DoubleVar(), DoubleVar(), DoubleVar())
+        for rate in self.varScale:
+            rate.set(1)
         self.mouse = (0.0, 0.0)
         self.moveR = (0.0, 0.0)
         self.moveT = (0.0, 0.0)
@@ -87,7 +89,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
     def tkAphin(self, event):
         win_height = max(1, self.winfo_height())
-        obj_c = (self.centerX, self.centerY, self.centerZ)
+        obj_c = (self.centerX.get(), self.centerY.get(), self.centerZ.get())
         win = gluProject(*obj_c)
         obj = gluUnProject(win[0], win[1] + 0.5 * win_height, win[2])
         dist = math.sqrt(self.v3distsq(obj, obj_c))
@@ -170,18 +172,10 @@ class Draw(Init_Global_Para, OpenGLFrame):
             self.make_torus(self.sizeObject * 0.3, self.sizeObject * 3 * 0.3)
         elif self.object == 'cone':
             self.make_cone(self.sizeObject * 0.3, self.sizeObject * 2 * 0.3)
-        # self.make_cube(self.sizeObject)
-        # self.make_box(self.sizeObject, self.sizeObject*2, self.sizeObject*1.5)
-        # self.make_sphere(self.sizeObject)
-        # self.make_cone(self.sizeObject, self.sizeObject*3)
-        # self.make_cylinder(self.sizeObject, self.sizeObject*3)
-        # self.make_torus(self.sizeObject, self.sizeObject*3)
-        # self.make_teapot(self.sizeObject)
-        # self.make_teapot(2)
-        # self.make_truncatedCone(self.sizeObject, self.sizeObject*2, self.sizeObject*2)
-        # self.make_pyramid(self.sizeObject*2, self.sizeObject*3)
-        self.drawAxes()
-
+        elif self.object == 'pyramid':
+            self.make_pyramid(self.sizeObject * 0.4, self.sizeObject * 0.5)
+        elif self.object == 'truncated cone':
+            self.make_truncatedCone(self.sizeObject * 0.3, self.sizeObject * 0.6, self.sizeObject * 0.6)
         glPopMatrix()
         glFlush()
 

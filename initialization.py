@@ -1,9 +1,11 @@
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
+import numpy as np
 import math
-from shape import  drawObject
+from shape import drawObject
 from PIL import Image
+from tkinter import *
 
 class Init_Global_Para(drawObject):
     def __init__(self, typeDraw="face"):
@@ -17,26 +19,52 @@ class Init_Global_Para(drawObject):
 
 
         ###  Begin PROJECTION  ###
-        self.toggleProjection = 0 # 0 is off; 1 is on
-        # can multi choice #
-        self.toggleProjection_Perspective = 0 # 0 is off; 1 is on
+        self.toggleProjection = 1 # 0 is off; 1 is on
+
+        # Perspective
+        self.toggleProjection_Perspective = 1 # 0 is off; 1 is on
+        
+        # self.fov = DoubleVar() # field of view for perspective 
+        # self.asp = DoubleVar()  # aspect ratio; field of view for perspective
+        # self.zNear = DoubleVar() # field of view for perspective
+        # self.zFar = DoubleVar() # field of view for perspective
+        # print(self.fov)
+        # self.fov.set(45) # field of view for perspective 
+        # self.asp.set(1)  # aspect ratio;field of view for perspective
+        # self.zNear.set(1.0) # field of view for perspective
+        # self.zFar.set(100.0) # field of view for perspective
+
+        self.fov = 45 # field of view for perspective 
+        self.asp = 1  # aspect ratio;field of view for perspective
+        self.zNear = 1 # field of view for perspective
+        self.zFar = 100 # field of view for perspective
+        
+        
+        #------------#
         self.toggleProjection_LookAt_Eye = 0 # 0 is off; 1 is on
         self.toggleProjection__LookAt_Center = 0 # 0 is off; 1 is on
         self.toggleProjection__LookAt_Up = 0 # 0 is off; 1 is on
         # can multi choice #
-        self.fov = 45.0 # field of view for perspective 
-        self.asp = 1.0  # aspect ratio;field of view for perspective
-        self.zNear = 1.0 # field of view for perspective
-        self.zFar = 100.0 # field of view for perspective
-        self.eyeX = 0.0
-        self.eyeY = 0.0
-        self.eyeZ = 10.0
-        self.centerX = 0.0
-        self.centerY = 0.0
-        self.centerZ = 0.0
-        self.upX = 0.0
-        self.upY = 1.0
-        self.upZ = 0.0
+        self.eyeX = DoubleVar()
+        self.eyeY = DoubleVar()
+        self.eyeZ = DoubleVar()
+        self.eyeX.set(0)
+        self.eyeY.set(0)
+        self.eyeZ.set(10)
+
+        self.centerX = DoubleVar()
+        self.centerY = DoubleVar()
+        self.centerZ = DoubleVar()
+        self.centerX.set(0.0)
+        self.centerY.set(0.0)
+        self.centerZ.set(0.0)
+
+        self.upX = DoubleVar()
+        self.upY = DoubleVar()
+        self.upZ = DoubleVar()
+        self.upX.set(0.0)
+        self.upY.set(1.0)
+        self.upZ.set(0.0)
         ###  End PROJECTION  ###
 
         ###  LIGHTING  ###
@@ -61,6 +89,9 @@ class Init_Global_Para(drawObject):
         # self.currentTexture = 0
         ### END TEXTURES  ###
 
+        # ###  ANIMATION  ###
+        # self.toggleAnimation = DEF_ANIMATE
+        # self.cubeRotation = DEF_CUBE_ROTATION
         ###  EFFECT  ###
         # self.cubeRotation = DEF_CUBE_ROTATION
         self.toggleRotating = -1
@@ -75,56 +106,57 @@ class Init_Global_Para(drawObject):
         glEnable(GL_DEPTH_TEST)
 
     def displayEye(self):
-        gluLookAt(self.eyeX, self.eyeY, self.eyeZ, self.centerX, self.centerY, self.centerZ, self.upX, self.upY, self.upZ) #void gluLookAt(GLdouble eyeX,GLdouble eyeY,GLdouble eyeZ,GLdouble centerX,GLdouble centerY,GLdouble centerZ,GLdouble upX,GLdouble upY,GLdouble upZ);
+        gluLookAt(self.eyeX.get(), self.eyeY.get(), self.eyeZ.get(), self.centerX.get(), self.centerY.get(), self.centerZ.get(), self.upX.get(), self.upY.get(), self.upZ.get()) #void gluLookAt(GLdouble eyeX,GLdouble eyeY,GLdouble eyeZ,GLdouble centerX,GLdouble centerY,GLdouble centerZ,GLdouble upX,GLdouble upY,GLdouble upZ);
 
     def displayReshape(self, evt, width, height): #==tkResize in base.py
         glViewport(0,0, width,height)
-        self.displayProject(self.fov,self.asp,self.zNear,self.zFar)
+        self.displayProject(self.fov, self.asp, self.zNear, self.zFar)
 
-    def displayProject(self,fov,asp,zNear,zFar):
+    def displayProject(self, fov, asp, zNear, zFar):
         glMatrixMode(GL_PROJECTION)
         glLoadIdentity()
-        gluPerspective(fov,asp,zNear,zFar) #void gluPerspective(	GLdouble fovy, GLdouble aspect,GLdouble zNear, 	GLdouble zFar);
+        print(fov)
+        gluPerspective(fov, asp, zNear, zFar) #void gluPerspective(	GLdouble fovy, GLdouble aspect,GLdouble zNear, 	GLdouble zFar);
         glMatrixMode(GL_MODELVIEW)
         glLoadIdentity()
 
     def initgl(self):
         glutInit()
         self.displayInit()
-        self.displayProject(self.fov,self.asp,self.zNear,self.zFar)
+        self.displayProject(self.fov, self.asp, self.zNear, self.zFar)
 
 
     def redisplayAll(self):
         self.displayReshape(1024, 768)
         glutPostRedisplay()
 
-    def drawAxes(self):
-        if (self.toggleAxes):
-            ###  Length of axes ###
-            len = 5.0
-            glDisable(GL_LIGHTING)
-            glBegin(GL_LINES)
-            glColor3f(1.0, 0.0, 0.0)
-            glVertex3f(-len, 0.0, 0.0)
-            glVertex3f(len, 0.0, 0.0)
-            glEnd()
-            glBegin(GL_LINES)
-            glColor3f(0.0, 1.0, 0.0)
-            glVertex3f(0.0, -len, 0.0)
-            glVertex3f(0.0, len, 0.0)
-            glEnd()
-            glBegin(GL_LINES)
-            glColor3f(0.0, 0.0, 1.0)
-            glVertex3f(0.0, 0.0, -len)
-            glVertex3f(0.0, 0.0, len)
-            glEnd()
-            ###  Label axes ###
-            glColor3fv(self.white)
-            glRasterPos3d(len,0,0)
-            glRasterPos3d(0,len,0)
-            glRasterPos3d(0,0,len)
-            if self.toggleLight:
-                glEnable(GL_LIGHTING)
+    # def drawAxes(self):
+    #     if (self.toggleAxes):
+    #         ###  Length of axes ###
+    #         len = 5.0
+    #         glDisable(GL_LIGHTING)
+    #         glBegin(GL_LINES)
+    #         glColor3f(1.0, 0.0, 0.0)
+    #         glVertex3f(-len, 0.0, 0.0)
+    #         glVertex3f(len, 0.0, 0.0)
+    #         glEnd()
+    #         glBegin(GL_LINES)
+    #         glColor3f(0.0, 1.0, 0.0)
+    #         glVertex3f(0.0, -len, 0.0)
+    #         glVertex3f(0.0, len, 0.0)
+    #         glEnd()
+    #         glBegin(GL_LINES)
+    #         glColor3f(0.0, 0.0, 1.0)
+    #         glVertex3f(0.0, 0.0, -len)
+    #         glVertex3f(0.0, 0.0, len)
+    #         glEnd()
+    #         ###  Label axes ###
+    #         glColor3fv(self.white)
+    #         glRasterPos3d(len,0,0)
+    #         glRasterPos3d(0,len,0)
+    #         glRasterPos3d(0,0,len)
+    #         if self.toggleLight:
+    #             glEnable(GL_LIGHTING)
 
     def drawLight(self):
         ###  Light switch ###
