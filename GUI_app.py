@@ -3,6 +3,8 @@ import tkinter.messagebox as mbox
 from shape import drawObject
 from pyopengltk import OpenGLFrame
 from tkinter.filedialog import askopenfilename
+from tkinter.colorchooser import askcolor
+import numpy as np
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -30,33 +32,38 @@ class App3D:
         self.frame_options = Frame(self.root, bg='#EBE5E9')
         self.frame_options.place(relx=0.1, rely=0.1, relwidth=0.14, relheight=0.89)
         """-----------------------------------------"""
-        # Buttons (Transform): Scale, Rotate, Translate
-        # Scale
+        """Upper Toolbar"""
+        # Buttons: Scale, Rotate, Translate
         self.scale_mode = 0
         self.button_scale = Button(self.root, bg='#fffc33', text='SCALE', command=self.load_scale_board)
-        # Rotate
+
         self.button_rotate = Button(self.root, bg='#8fd6de', text='ROTATE', command=self.rotate)
-        # Translate
+
         self.button_translate = Button(self.root, bg='#ed7686', text='TRANSLATE', command=self.translate)
 
+        # Button: Color
+        self.button_choose_color = Button(self.root, bg='#bd673e', text='COLOR', command=self.load_color_board)
+        
+        # Button: Clear
+        self.button_clear = Button(self.root, text='CLEAR', bg='#88809b', command=self.clear_screen)
         """-----------------------------------------"""
         # Buttons (Objects): Teapot, Cube, Sphere, Cylinder, Torus, Cone, Pyramid, Truncated Cone
         self.button_object_before = None
-        # Teapot   
+        
         self.button_Teapot = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('teapot', self.button_Teapot))
-        # Cube
+        
         self.button_Cube = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('cube', self.button_Cube))
-        # Sphere
+
         self.button_Sphere = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('sphere', self.button_Sphere))
-        # Cylinder
+
         self.button_Cylinder = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('cylinder', self.button_Cylinder))
-        # Torus
+
         self.button_Torus = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('torus', self.button_Torus))
-        # Cone
+
         self.button_Cone = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('cone', self.button_Cone))
-        # Pyramid
+
         self.button_Pyramid = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('pyramid', self.button_Pyramid))
-        # Truncated Cone
+
         self.button_TruncatedCone = Button(self.frame_objects, activebackground='#c9e2f8', command=lambda:self.make_object('truncated cone', self.button_TruncatedCone))
 
         """-----------------------------------------"""
@@ -131,17 +138,20 @@ class App3D:
  
         # Exit
         self.exit_button = Button(self.root, text='X', command=self.root.quit)
-
-        # Clear
-        self.button_clear = Button(self.root, text='CLEAR', command=self.clear_screen)
         """-----------------------------------------"""
     """++++++++++++++++++++++++++++++++++++++++++"""
     def screenMain_Load(self):
-        self.button_clear.place(relx=0.22, rely=0.05, relwidth=0.05, relheight=0.04)
-        # Transform buttons: scale, rotate, translate
-        self.button_scale.place(relx=0.01, rely=0.05, relheight=0.04)
-        self.button_rotate.place(relx=0.07, rely=0.05, relheight=0.04)
-        self.button_translate.place(relx=0.137, rely=0.05, relheight=0.04)
+        """Upper Toolbar"""
+        # Buttons: Scale, Rotate, Translate
+        self.button_scale.place(relx=0.01, rely=0.05, relwidth=0.05, relheight=0.04)
+        self.button_rotate.place(relx=0.07, rely=0.05, relwidth=0.06, relheight=0.04)
+        self.button_translate.place(relx=0.14, rely=0.05, relwidth=0.09, relheight=0.04)
+        
+        # Button: Color
+        self.button_choose_color.place(relx=0.24, rely=0.05, relwidth=0.05, relheight=0.04)
+        
+        # Button: Clear
+        self.button_clear.place(relx=0.3, rely=0.05, relwidth=0.05, relheight=0.04)
         """-----------------------------------------"""
         # Objects buttons: teapot  
         # Images
@@ -155,29 +165,30 @@ class App3D:
         truncated_cone = PhotoImage(file = './imgs/truncatedcone.png').subsample(6, 6) 
         # Buttons
         # Teapot
+        objects_y = 0.03
         self.button_Teapot['image'] = teapot
-        self.button_Teapot.place(relx=0.01, relwidth=0.98, rely=0.01, relheight=0.1)
+        self.button_Teapot.place(relx=0.01, relwidth=0.98, rely=objects_y, relheight=0.1)
         # Cube
         self.button_Cube['image'] = cube    
-        self.button_Cube.place(relx=0.01, relwidth=0.98, rely=0.12, relheight=0.1)
+        self.button_Cube.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1 + 0.02, relheight=0.1)
         # Sphere
         self.button_Sphere['image'] = sphere
-        self.button_Sphere.place(relx=0.01, relwidth=0.98, rely=0.23, relheight=0.1)
+        self.button_Sphere.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*2 + 0.02*2, relheight=0.1)
         # Cylinder
         self.button_Cylinder['image'] = cylinder
-        self.button_Cylinder.place(relx=0.01, relwidth=0.98, rely=0.34, relheight=0.1)
+        self.button_Cylinder.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*3 + 0.02*3, relheight=0.1)
         # Torus
         self.button_Torus['image'] = torus
-        self.button_Torus.place(relx=0.01, relwidth=0.98, rely=0.45, relheight=0.1)
+        self.button_Torus.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*4 + 0.02*4, relheight=0.1)
         # Cone
         self.button_Cone['image'] = cone
-        self.button_Cone.place(relx=0.01, relwidth=0.98, rely=0.56, relheight=0.1)
+        self.button_Cone.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*5 + 0.02*5, relheight=0.1)
         # Pyramid
         self.button_Pyramid['image'] = pyramid
-        self.button_Pyramid.place(relx=0.01, relwidth=0.98, rely=0.67, relheight=0.1)
+        self.button_Pyramid.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*6 + 0.02*6, relheight=0.1)
         # Truncated Cone
         self.button_TruncatedCone['image'] = truncated_cone
-        self.button_TruncatedCone.place(relx=0.01, relwidth=0.98, rely=0.78, relheight=0.1)
+        self.button_TruncatedCone.place(relx=0.01, relwidth=0.98, rely=objects_y + 0.1*7 + 0.02*7, relheight=0.1)
         """-----------------------------------------"""
         self.frame_shape.place(relx=0.01, rely=0.01, relwidth=0.99, relheight=0.17)
 
@@ -206,7 +217,7 @@ class App3D:
     def transfer_face(self):
             self.object_drawing.typeDraw = self.shape_var.get()
     """++++++++++++++++++++++++++++++++++++++++++"""
-    # SCALE functions
+    """SCALE"""
     # Load scale board when click on scale button
     def load_scale_board(self):
         try:
@@ -220,6 +231,7 @@ class App3D:
             self.frame_scale_board.place(relx=0.01, rely=0.67, relwidth=0.34, relheight=0.32)
             
             self.board_using.append(self.frame_scale_board)
+            
             # Label: Name of the Board
             label_name = Label(self.frame_scale_board, bg='#81dbd0', justify='left', text='Scale Board')
             label_name.place(relwidth=1, relheight=0.1)
@@ -328,7 +340,7 @@ class App3D:
     #         print(self.scale_ratio_pre[i].get())
     #         self.scale_ratio[i].set(self.scale_ratio_pre[i])
     """++++++++++++++++++++++++++++++++++++++++++"""
-    # ROTATE functions
+    """ROTATE"""
     def rotate(self):
         try:
             self.object_drawing.aphinType = 1
@@ -338,7 +350,7 @@ class App3D:
         except AttributeError:
             pass
     """++++++++++++++++++++++++++++++++++++++++++"""
-    # TRANSLATE functions
+    """TRANSLATE"""
     def translate(self):
         try:
             self.object_drawing.aphinType = 2
@@ -347,6 +359,13 @@ class App3D:
             self.object_drawing['cursor'] = 'fleur'
         except AttributeError:
             pass
+    """++++++++++++++++++++++++++++++++++++++++++"""
+    """COLOR"""
+    def load_color_board(self):
+        if self.object_drawing is None:
+            pass
+        else:
+            self.object_drawing.color = np.array(askcolor(title ="Choose color")[0])
     """++++++++++++++++++++++++++++++++++++++++++"""
     # PROJECTION functions
     def load_projection_board(self):

@@ -13,8 +13,6 @@ class Draw(Init_Global_Para, OpenGLFrame):
         OpenGLFrame.__init__(self, *args, **kw)
         self.object = shapeObject
 
-        self.bind('<Triple-Button-2>', self.tkReset)
-
         ### Begin APHIN ###
         self.aphinType = -1 # 0 is Scale; 1 is Rotate; 2 is Translate
         self.varScale = (DoubleVar(), DoubleVar(), DoubleVar())
@@ -40,34 +38,8 @@ class Draw(Init_Global_Para, OpenGLFrame):
         self.toggleLight = isLighting
         self.lightSourceT = (0.0, 0.0)
         self.preLightSourceT = (0.0, 0.0)
-        self.bind('<Button-3>', self.tkSetAphin3)
         ### End LIGHT ###
 
-        
-    def tkReset(self, event):
-        self.aphinType = -1 # 0 is Scale; 1 is Rotate; 2 is Translate
-        self.mouse = (0.0, 0.0)
-        self.moveR = (0.0, 0.0)
-        self.moveT = (0.0, 0.0)
-        self.lightSourceT = (0.0, 0.0)
-        self.preMoveR = (0.0, 0.0)
-        self.preMoveT = (0.0, 0.0)
-        self.preLightSourceT = (0.0, 0.0)
-
-    def tkSetAphin1(self, event):
-        self.aphinType = 1
-        self.isRotateFirst = 1
-        self.bind('<B1-Motion>', self.tkAphin)
-
-    def tkSetAphin2(self, event):
-        self.aphinType = 2
-        self.isTranslateFirst = 1
-        self.bind('<B1-Motion>', self.tkAphin)
-
-    def tkSetAphin3(self, event):
-        # self.toggleLight = 1 - self.toggleLight
-        self.aphinType = 3
-        self.bind('<B1-Motion>', self.tkAphin)
 
     def tkSizeObject(self, event):
         self.sizeObject = math.sqrt(math.pow((event.x - self.mouse[0]), 2)+math.pow((event.y-self.mouse[1]), 2))/170
@@ -108,6 +80,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
     def redraw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
+        glColor3fv(self.color/255)
         if self.aphinType == 3:
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
         self.drawLight()
@@ -157,7 +130,6 @@ class Draw(Init_Global_Para, OpenGLFrame):
             glRotatef(self.rotAngle, 1.0, 1.0, 1.0)
             self.rotAngle += 0.25
             
-        glColor3fv([1, 1, 1])
         if self.object == 'cube':
             self.make_cube(self.sizeObject * 0.3)
         elif self.object == 'box':
