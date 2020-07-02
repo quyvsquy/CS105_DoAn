@@ -1,4 +1,3 @@
-
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -14,10 +13,10 @@ class Init_Global_Para(drawObject):
         self.isTexture = 0
         self.typeDraw = typeDraw # points, lines, face
 
+        self.color = np.array([255, 255, 255])
         ###  TOGGLE DRAW DISPLAYS  ###
         self.toggleAxes = 0
         self.toggleParams = 1
-
 
         ###  Begin PROJECTION  ###
         self.toggleProjection = 1 # 0 is off; 1 is on
@@ -33,13 +32,7 @@ class Init_Global_Para(drawObject):
         self.fov.set(45.0) # field of view for perspective 
         self.asp.set(1.0)  # aspect ratio;field of view for perspective
         self.zNear.set(1.0) # field of view for perspective
-        self.zFar.set(100.0) # field of view for perspective
-
-        # self.fov = 45 # field of view for perspective 
-        # self.asp = 1  # aspect ratio;field of view for perspective
-        # self.zNear = 1 # field of view for perspective
-        # self.zFar = 100 # field of view for perspective
-        
+        self.zFar.set(100.0) # field of view for perspective        
         
         #------------#
         self.toggleProjection_LookAt_Eye = 0 # 0 is off; 1 is on
@@ -79,7 +72,6 @@ class Init_Global_Para(drawObject):
         self.shininess = 0
         self.shinyvec = [0,1]
         self.lightY = 0
-        self.white = [1,1,1]
         self.lightPh = 90
 
         ### BEGIN TEXTURES  ###
@@ -130,34 +122,6 @@ class Init_Global_Para(drawObject):
         self.displayReshape(1024, 768)
         glutPostRedisplay()
 
-    # def drawAxes(self):
-    #     if (self.toggleAxes):
-    #         ###  Length of axes ###
-    #         len = 5.0
-    #         glDisable(GL_LIGHTING)
-    #         glBegin(GL_LINES)
-    #         glColor3f(1.0, 0.0, 0.0)
-    #         glVertex3f(-len, 0.0, 0.0)
-    #         glVertex3f(len, 0.0, 0.0)
-    #         glEnd()
-    #         glBegin(GL_LINES)
-    #         glColor3f(0.0, 1.0, 0.0)
-    #         glVertex3f(0.0, -len, 0.0)
-    #         glVertex3f(0.0, len, 0.0)
-    #         glEnd()
-    #         glBegin(GL_LINES)
-    #         glColor3f(0.0, 0.0, 1.0)
-    #         glVertex3f(0.0, 0.0, -len)
-    #         glVertex3f(0.0, 0.0, len)
-    #         glEnd()
-    #         ###  Label axes ###
-    #         glColor3fv(self.white)
-    #         glRasterPos3d(len,0,0)
-    #         glRasterPos3d(0,len,0)
-    #         glRasterPos3d(0,0,len)
-    #         if self.toggleLight:
-    #             glEnable(GL_LIGHTING)
-
     def drawLight(self):
         ###  Light switch ###
         if self.toggleLight != -1:
@@ -171,7 +135,7 @@ class Init_Global_Para(drawObject):
                 Position  = [self.lightPosX, self.lightPosY, 3.0, 1.0]
             ###  Draw light position as sphere (still no lighting here) ###
             glPushMatrix()
-            glColor3fv(self.white)
+            glColor3fv(self.color/255)
         
             glDisable(GL_LIGHTING)
             glTranslate(Position[0], Position[1], Position[2])
