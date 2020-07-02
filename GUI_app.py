@@ -366,19 +366,19 @@ class App3D:
                 # Scale bars --> Show scale bars: Fovy, Aspect, Near, Far
                 pos_scale_bars_x = 0.2
                 scale_Fovy = Scale(self.frame_perspective_board, variable=self.object_drawing.fov, orient='horizontal', from_=0, to=360, resolution=5)
-                scale_Fovy.set(self.object_drawing.fov)
+                scale_Fovy.set(self.object_drawing.fov.get())
                 scale_Fovy.place(relx=pos_scale_bars_x, rely=0.2, relheight=0.2)
 
                 scale_Aspect = Scale(self.frame_perspective_board, variable=self.object_drawing.asp, orient='horizontal', from_=0, to=1, resolution=0.01)
-                scale_Aspect.set(self.object_drawing.asp)
+                scale_Aspect.set(self.object_drawing.asp.get())
                 scale_Aspect.place(relx=pos_scale_bars_x, rely=0.4, relheight=0.2)
 
                 scale_Near = Scale(self.frame_perspective_board, variable=self.object_drawing.zNear, orient='horizontal', from_=1, to=10, resolution=0.01)
-                scale_Near.set(self.object_drawing.zNear)
+                scale_Near.set(self.object_drawing.zNear.get())
                 scale_Near.place(relx=pos_scale_bars_x, rely=0.6, relheight=0.2)
 
                 scale_Far = Scale(self.frame_perspective_board, variable=self.object_drawing.zFar, orient='horizontal', from_=1, to=100, resolution=0.01)
-                scale_Far.set(self.object_drawing.zFar)
+                scale_Far.set(self.object_drawing.zFar.get())
                 scale_Far.place(relx=pos_scale_bars_x, rely=0.8, relheight=0.2)
 
                 self.scale_ratio = [scale_Fovy, scale_Aspect, scale_Near, scale_Far]
