@@ -15,9 +15,14 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
         ### Begin APHIN ###
         self.aphinType = -1 # 0 is Scale; 1 is Rotate; 2 is Translate
+       
         self.varScale = (DoubleVar(), DoubleVar(), DoubleVar())
         for rate in self.varScale:
             rate.set(1)
+        self.varScale_tmp = (DoubleVar(), DoubleVar(), DoubleVar())
+        for rate in self.varScale_tmp:
+            rate.set(1)
+
         self.mouse = (0.0, 0.0)
         self.moveR = (0.0, 0.0)
         self.moveT = (0.0, 0.0)
@@ -42,7 +47,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
 
     def tkSizeObject(self, event):
-        self.sizeObject = math.sqrt(math.pow((event.x - self.mouse[0]), 2)+math.pow((event.y-self.mouse[1]), 2))/170
+        self.sizeObject = math.sqrt(math.pow((event.x - self.mouse[0]), 2) + math.pow((event.y-self.mouse[1]), 2))/170
 
     def tkRecordMouse(self, event):
         if self.aphinType == 0:
