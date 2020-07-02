@@ -88,6 +88,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
         self.drawLight()
         self.drawTexture()
+        self.displayProject(self.fov, self.asp, self.zNear, self.zFar)
         glLoadIdentity()
         self.displayEye()
         glPushMatrix()
