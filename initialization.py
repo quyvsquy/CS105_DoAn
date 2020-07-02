@@ -29,25 +29,25 @@ class Init_Global_Para(drawObject):
         self.zNear = DoubleVar() # field of view for perspective
         self.zFar = DoubleVar() # field of view for perspective
         
-        self.fov.set(45.0) # field of view for perspective 
-        self.asp.set(1.0)  # aspect ratio;field of view for perspective
-        self.zNear.set(1.0) # field of view for perspective
-        self.zFar.set(100.0) # field of view for perspective        
+        self.fov.set(45.0) 
+        self.asp.set(1.48) 
+        self.zNear.set(1.0) 
+        self.zFar.set(100.0)        
         
-        self.fov_tmp = DoubleVar() # field of view for perspective 
-        self.asp_tmp = DoubleVar()  # aspect ratio; field of view for perspective
-        self.zNear_tmp = DoubleVar() # field of view for perspective
-        self.zFar_tmp = DoubleVar() # field of view for perspective
+        self.fov_tmp = DoubleVar() 
+        self.asp_tmp = DoubleVar()  
+        self.zNear_tmp = DoubleVar() 
+        self.zFar_tmp = DoubleVar() 
         
-        self.fov_tmp.set(45.0) # field of view for perspective 
-        self.asp_tmp.set(1.0)  # aspect ratio;field of view for perspective
-        self.zNear_tmp.set(1.0) # field of view for perspective
-        self.zFar_tmp.set(100.0) # field of view for perspective    
+        self.fov_tmp.set(45.0) 
+        self.asp_tmp.set(1.48) 
+        self.zNear_tmp.set(1.0) 
+        self.zFar_tmp.set(100.0)    
 
         #------------#
-        self.toggleProjection_LookAt_Eye = 0 # 0 is off; 1 is on
-        self.toggleProjection__LookAt_Center = 0 # 0 is off; 1 is on
-        self.toggleProjection__LookAt_Up = 0 # 0 is off; 1 is on
+        self.toggleProjection_LookAt_Eye = 0 
+        self.toggleProjection__LookAt_Center = 0 
+        self.toggleProjection__LookAt_Up = 0 
         # can multi choice #
         self.eyeX = DoubleVar()
         self.eyeY = DoubleVar()

@@ -209,7 +209,6 @@ class drawObject:
             if self.toggleTextures:
                 quadratic_obj = gluNewQuadric()
                 gluQuadricTexture(quadratic_obj, GL_TRUE)
-                glRotatef(-90, 1.0, 0.0, 0.0)
                 gluCylinder(quadratic_obj, base_rad, top_rad, length, 32, 32)
             else:
                 quadratic_obj = gluNewQuadric()

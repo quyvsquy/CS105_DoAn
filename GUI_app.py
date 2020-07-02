@@ -270,15 +270,15 @@ class App3D:
             # Scale bars --> Show scale bars: X, Y, Z
             scale_bars_x = 0.2
             scale_bars_y = 0.34
-            scaleX = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[0], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleX = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[0], orient='horizontal', from_=-30, to=30, resolution=0.01)
             scaleX.set(self.object_drawing.varScale[0].get())
             scaleX.place(relx=scale_bars_x, rely=scale_bars_y, relheight=0.2)
 
-            scaleY = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[1], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleY = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[1], orient='horizontal', from_=-30, to=30, resolution=0.01)
             scaleY.set(self.object_drawing.varScale[1].get())
             scaleY.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 + 0.03, relheight=0.2)
 
-            scaleZ = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[2], orient='horizontal', from_=0, to=10, resolution=0.01)
+            scaleZ = Scale(self.frame_scale_board, variable=self.object_drawing.varScale[2], orient='horizontal', from_=-30, to=30, resolution=0.01)
             scaleZ.set(self.object_drawing.varScale[2].get())
             scaleZ.place(relx=scale_bars_x, rely=scale_bars_y + 0.2 * 2 + 0.03 * 2, relheight=0.2)
 
@@ -429,19 +429,19 @@ class App3D:
 
                 # Scale bars --> Show scale bars: Fovy, Aspect, Near, Far
                 pos_scale_bars_x = 0.2
-                scale_Fovy = Scale(self.frame_perspective_board, variable=self.object_drawing.fov, orient='horizontal', from_=0, to=360, resolution=5)
+                scale_Fovy = Scale(self.frame_perspective_board, variable=self.object_drawing.fov, orient='horizontal', from_=-360, to=360, resolution=5)
                 scale_Fovy.set(self.object_drawing.fov.get())
                 scale_Fovy.place(relx=pos_scale_bars_x, rely=0.28, relheight=0.2)
 
-                scale_Aspect = Scale(self.frame_perspective_board, variable=self.object_drawing.asp, orient='horizontal', from_=0, to=1, resolution=0.01)
+                scale_Aspect = Scale(self.frame_perspective_board, variable=self.object_drawing.asp, orient='horizontal', from_=-30, to=30, resolution=0.01)
                 scale_Aspect.set(self.object_drawing.asp.get())
                 scale_Aspect.place(relx=pos_scale_bars_x, rely=0.46, relheight=0.2)
 
-                scale_Near = Scale(self.frame_perspective_board, variable=self.object_drawing.zNear, orient='horizontal', from_=1, to=10, resolution=0.01)
+                scale_Near = Scale(self.frame_perspective_board, variable=self.object_drawing.zNear, orient='horizontal', from_=-30, to=30, resolution=0.01)
                 scale_Near.set(self.object_drawing.zNear.get())
                 scale_Near.place(relx=pos_scale_bars_x, rely=0.64, relheight=0.2)
 
-                scale_Far = Scale(self.frame_perspective_board, variable=self.object_drawing.zFar, orient='horizontal', from_=1, to=100, resolution=0.01)
+                scale_Far = Scale(self.frame_perspective_board, variable=self.object_drawing.zFar, orient='horizontal', from_=-30, to=30, resolution=0.01)
                 scale_Far.set(self.object_drawing.zFar.get())
                 scale_Far.place(relx=pos_scale_bars_x, rely=0.82, relheight=0.2)
 
@@ -524,15 +524,15 @@ class App3D:
                 if self.projection_var.get() == 2:
                     label_name['text'] = 'Look at (Eye)'
                     var = [self.object_drawing.eyeX, self.object_drawing.eyeY, self.object_drawing.eyeZ]
-                    boundary = [[0, 1], [0, 1], [0, 10]]
+                    boundary = [[-30, 30], [-30, 30], [-30, 30]]
                 elif self.projection_var.get() == 3:
                     label_name['text'] = 'Look at (Center)'
                     var = [self.object_drawing.centerX, self.object_drawing.centerY, self.object_drawing.centerZ]
-                    boundary = [[0, 1], [0, 1], [0, 1]]
+                    boundary = [[-30, 30], [-30, 30], [-30, 30]]
                 else:
                     label_name['text'] = 'Look at (Up)'
                     var = [self.object_drawing.upX, self.object_drawing.upY, self.object_drawing.upZ]
-                    boundary = [[0, 1], [0, 1], [0, 1]]
+                    boundary = [[-30, 30], [-30, 30], [-30, 30]]
 
                 scaleX = Scale(self.frame_scale_board, variable=var[0], orient='horizontal', from_=boundary[0][0], to=boundary[0][1], resolution=0.01)
                 scaleX.set(var[0].get())
@@ -581,8 +581,8 @@ class App3D:
     def set_projection_ratio(self, entry, axis):
         tmp = entry.get()
         if axis == 'fovy':
-            if float(tmp) < 0 or float(tmp) > 360:
-                mbox.showerror("Error", "Ratio should be between 0 and 360!")
+            if float(tmp) < -360 or float(tmp) > 360:
+                mbox.showerror("Error", "Ratio should be between -360 and 360!")
             elif float(tmp) - int(float(tmp)) != 0:
                 mbox.showerror("Error", "Ratio should be integer number!")
             elif float(tmp) % 5 != 0:
@@ -590,33 +590,33 @@ class App3D:
             else: 
                 self.scale_ratio[0].set(float(tmp))
         elif axis == 'aspect':
-            if float(tmp) < 0 or float(tmp) > 1:
-                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[1].set(tmp)
         elif axis == 'near':
-            if float(tmp) < 0 or float(tmp) > 10:
-                mbox.showerror("Error", "Ratio should be between 0 and 10!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[2].set(tmp)
         elif axis == 'far':
-            if float(tmp) < 0 or float(tmp) > 100:
-                mbox.showerror("Error", "Ratio should be between 0 and 100!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[-1].set(tmp)
         elif axis == 'X':
-            if float(tmp) < 0 or float(tmp) > 1:
-                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[0].set(tmp)
         elif axis == 'Y':
-            if float(tmp) < 0 or float(tmp) > 1:
-                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[1].set(tmp)
         else:
-            if float(tmp) < 0 or float(tmp) > 1:
-                mbox.showerror("Error", "Ratio should be between 0 and 1!")
+            if float(tmp) < -30 or float(tmp) > 30:
+                mbox.showerror("Error", "Ratio should be between -30 and 30!")
             else:
                 self.scale_ratio[-1].set(tmp)
     
@@ -624,7 +624,11 @@ class App3D:
     def set_as_default_(self):
         if self.projection_var.get() == 1:
             self.scale_ratio[0].set(45)
-            self.scale_ratio[1].set(1)
+            if self.object_drawing.height > 0:
+                self.scale_ratio[1].set(self.object_drawing.width/self.object_drawing.height)
+            else: 
+                self.scale_ratio[1].set(1)
+            # self.scale_ratio[1].set(1)
             self.scale_ratio[2].set(1)
             self.scale_ratio[-1].set(100)
             mbox.showinfo("Info", f"Successfully!\nFovy: {self.object_drawing.fov.get()}\nAspect: {self.object_drawing.asp.get()}\nNear: {self.object_drawing.zNear.get()}\nFar: {self.object_drawing.zFar.get()}")
