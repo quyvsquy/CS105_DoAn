@@ -35,14 +35,14 @@ class App3D:
         """Upper Toolbar"""
         # Buttons: Scale, Rotate, Translate
         self.scale_mode = 0
-        self.button_scale = Button(self.root, bg='#fffc33', text='SCALE', command=self.load_scale_board)
+        self.button_scale = Button(self.root, bg='#e1f281', text='SCALE', activebackground='#b0cf04', command=self.load_scale_board)
 
-        self.button_rotate = Button(self.root, bg='#8fd6de', text='ROTATE', command=self.rotate)
+        self.button_rotate = Button(self.root, bg='#aef9f8', text='ROTATE', activebackground='#07cdcb', command=self.rotate)
 
-        self.button_translate = Button(self.root, bg='#ed7686', text='TRANSLATE', command=self.translate)
+        self.button_translate = Button(self.root, bg='#fec282', text='TRANSLATE', activebackground='#ff8e14', command=self.translate)
 
         # Button: Color
-        self.button_choose_color = Button(self.root, bg='#bd673e', text='COLOR', command=self.load_color_board)
+        self.button_choose_color = Button(self.root, bg='#b0f098', text='COLOR', activebackground='#298107', command=self.load_color_board)
         
         # Button: Clear
         self.button_clear = Button(self.root, text='CLEAR', bg='#88809b', command=self.clear_screen)
@@ -137,7 +137,7 @@ class App3D:
         self.frame_draw = Frame(self.root, bg='#000000')  # Draw here
  
         # Exit
-        self.exit_button = Button(self.root, text='X', command=self.root.quit)
+        self.exit_button = Button(self.root, text='X', bg='#e2280a', fg='#ffffff', font='12', command=self.root.quit)
         """-----------------------------------------"""
     """++++++++++++++++++++++++++++++++++++++++++"""
     def screenMain_Load(self):
@@ -204,7 +204,7 @@ class App3D:
 
         self.frame_draw.place(relx=0.25, rely=0.1, relwidth=0.74, relheight=0.89)
         
-        self.exit_button.place(relx=0.965, relwidth=0.035, relheight=0.04)
+        self.exit_button.place(relx=0.97, relwidth=0.03, relheight=0.04)
         
         self.root.mainloop()
     """++++++++++++++++++++++++++++++++++++++++++"""
@@ -224,6 +224,8 @@ class App3D:
             for board in self.board_using:
                 board.destroy()
             self.aphinType_pre = self.object_drawing.aphinType
+            self.color_before = '#e1f281'
+            self.button_scale['bg'] = '#b0cf04'
             self.object_drawing.aphinType = 0
             self.object_drawing.isScaleFirst = 1
             # Frame: scale board
@@ -311,6 +313,7 @@ class App3D:
             pass
 
     def exit_scale_mode(self):
+        self.button_scale['bg'] = self.color_before
         self.frame_scale_board.destroy()
         if self.aphinType_pre != -1:
             self.object_drawing.aphinType = self.aphinType_pre
@@ -365,7 +368,9 @@ class App3D:
         if self.object_drawing is None:
             pass
         else:
+            self.button_choose_color['bg'] = '#298107'
             self.object_drawing.color = np.array(askcolor(title ="Choose color")[0])
+            self.button_choose_color['bg'] = '#b0f098'
     """++++++++++++++++++++++++++++++++++++++++++"""
     # PROJECTION functions
     def load_projection_board(self):
@@ -676,6 +681,7 @@ class App3D:
             self.button_object_before['bg'] = '#d9d9d9'
             self.button_object_before = None
             self.object_drawing = None
+            self.button_scale['bg'] = '#e1f281'
         except AttributeError:
             pass
         self.scale_mode = 0

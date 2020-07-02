@@ -80,7 +80,10 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
     def redraw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT)
-        glColor3fv(self.color/255)
+        try:
+            glColor3fv(self.color/255)
+        except TypeError:
+            pass
         if self.aphinType == 3:
             self.lightPosX, self.lightPosY = self.lightSourceT[0], self.lightSourceT[1]
         self.drawLight()
