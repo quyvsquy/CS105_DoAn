@@ -72,7 +72,6 @@ class Init_Global_Para(drawObject):
         self.shininess = 0
         self.shinyvec = [0,1]
         self.lightY = 0
-        self.white = [1,1,1]
         self.lightPh = 90
 
         ### BEGIN TEXTURES  ###
@@ -136,7 +135,7 @@ class Init_Global_Para(drawObject):
                 Position  = [self.lightPosX, self.lightPosY, 3.0, 1.0]
             ###  Draw light position as sphere (still no lighting here) ###
             glPushMatrix()
-            glColor3fv(self.white)
+            glColor3fv(self.color/255)
         
             glDisable(GL_LIGHTING)
             glTranslate(Position[0], Position[1], Position[2])
