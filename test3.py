@@ -45,7 +45,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
 
         
     def tkReset(self, event):
-        self.aphinType = 4 # 0 is Scale; 1 is Rotate; 2 is Translate
+        self.aphinType = -1 # 0 is Scale; 1 is Rotate; 2 is Translate
         self.mouse = (0.0, 0.0)
         self.moveR = (0.0, 0.0)
         self.moveT = (0.0, 0.0)
@@ -169,7 +169,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
         elif self.object == 'cylinder':
             self.make_cylinder(self.sizeObject * 0.25, self.sizeObject * 3 * 0.25)
         elif self.object == 'torus':
-            self.make_torus(self.sizeObject * 0.3, self.sizeObject * 3 * 0.3)
+            self.make_torus(self.sizeObject * 0.1, self.sizeObject * 2 * 0.25)
         elif self.object == 'cone':
             self.make_cone(self.sizeObject * 0.3, self.sizeObject * 2 * 0.3)
         elif self.object == 'pyramid':
@@ -179,10 +179,12 @@ class Draw(Init_Global_Para, OpenGLFrame):
         glPopMatrix()
         glFlush()
 
-
     def tkResize(self, evt):
         self.width, self.height = evt.width, evt.height
-        # self.asp =  self.width/self.height if self.height > 0 else 1
+        if self.height > 0:
+            self.asp.set(self.width/self.height)
+        else: 
+            self.asp.set(1)
         if self.winfo_ismapped():
             glViewport(0, 0, self.width, self.height)
             self.initgl()

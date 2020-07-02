@@ -1,3 +1,4 @@
+
 from OpenGL.GLUT import *
 from OpenGL.GL import *
 from OpenGL.GLU import *
@@ -28,7 +29,7 @@ class Init_Global_Para(drawObject):
         self.asp = DoubleVar()  # aspect ratio; field of view for perspective
         self.zNear = DoubleVar() # field of view for perspective
         self.zFar = DoubleVar() # field of view for perspective
-        # print(self.fov)
+        
         self.fov.set(45.0) # field of view for perspective 
         self.asp.set(1.0)  # aspect ratio;field of view for perspective
         self.zNear.set(1.0) # field of view for perspective
