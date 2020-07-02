@@ -34,6 +34,16 @@ class Init_Global_Para(drawObject):
         self.zNear.set(1.0) # field of view for perspective
         self.zFar.set(100.0) # field of view for perspective        
         
+        self.fov_tmp = DoubleVar() # field of view for perspective 
+        self.asp_tmp = DoubleVar()  # aspect ratio; field of view for perspective
+        self.zNear_tmp = DoubleVar() # field of view for perspective
+        self.zFar_tmp = DoubleVar() # field of view for perspective
+        
+        self.fov_tmp.set(45.0) # field of view for perspective 
+        self.asp_tmp.set(1.0)  # aspect ratio;field of view for perspective
+        self.zNear_tmp.set(1.0) # field of view for perspective
+        self.zFar_tmp.set(100.0) # field of view for perspective    
+
         #------------#
         self.toggleProjection_LookAt_Eye = 0 # 0 is off; 1 is on
         self.toggleProjection__LookAt_Center = 0 # 0 is off; 1 is on
@@ -42,23 +52,50 @@ class Init_Global_Para(drawObject):
         self.eyeX = DoubleVar()
         self.eyeY = DoubleVar()
         self.eyeZ = DoubleVar()
+        
         self.eyeX.set(0.0)
         self.eyeY.set(0.0)
         self.eyeZ.set(10.0)
+        
+        self.eyeX_tmp = DoubleVar()
+        self.eyeY_tmp = DoubleVar()
+        self.eyeZ_tmp = DoubleVar()
+        
+        self.eyeX_tmp.set(0.0)
+        self.eyeY_tmp.set(0.0)
+        self.eyeZ_tmp.set(10.0)
 
         self.centerX = DoubleVar()
         self.centerY = DoubleVar()
         self.centerZ = DoubleVar()
+        
         self.centerX.set(0.0)
         self.centerY.set(0.0)
         self.centerZ.set(0.0)
 
+        self.centerX_tmp = DoubleVar()
+        self.centerY_tmp = DoubleVar()
+        self.centerZ_tmp = DoubleVar()
+        
+        self.centerX_tmp.set(0.0)
+        self.centerY_tmp.set(0.0)
+        self.centerZ_tmp.set(0.0)
+
         self.upX = DoubleVar()
         self.upY = DoubleVar()
         self.upZ = DoubleVar()
+        
         self.upX.set(0.0)
         self.upY.set(1.0)
         self.upZ.set(0.0)
+
+        self.upX_tmp = DoubleVar()
+        self.upY_tmp = DoubleVar()
+        self.upZ_tmp = DoubleVar()
+        
+        self.upX_tmp.set(0.0)
+        self.upY_tmp.set(1.0)
+        self.upZ_tmp.set(0.0)
         ###  End PROJECTION  ###
 
         ###  LIGHTING  ###

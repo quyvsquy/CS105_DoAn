@@ -248,11 +248,11 @@ class App3D:
             button_Set_as_default.place(relx=0.05, rely=pos_buttons_y, relwidth=0.39)
 
             # Buton: Save
-            button_Save = Button(self.frame_scale_board, text='Save')
+            button_Save = Button(self.frame_scale_board, text='Save', command=self.save)
             button_Save.place(relx=0.45, rely=pos_buttons_y, relwidth=0.245)
 
             # Button: Cancel
-            button_Cancel = Button(self.frame_scale_board, text='Cancel')
+            button_Cancel = Button(self.frame_scale_board, text='Cancel', command=self.cancel)
             button_Cancel.place(relx=0.705, rely=pos_buttons_y, relwidth=0.245)
 
             # Labels --> Show text: X, Y, X
@@ -313,6 +313,9 @@ class App3D:
             pass
 
     def exit_scale_mode(self):
+        self.object_drawing.varScale[0].set(self.object_drawing.varScale_tmp[0].get())
+        self.object_drawing.varScale[1].set(self.object_drawing.varScale_tmp[1].get())
+        self.object_drawing.varScale[2].set(self.object_drawing.varScale_tmp[2].get())
         self.button_scale['bg'] = self.color_before
         self.frame_scale_board.destroy()
         if self.aphinType_pre != -1:
@@ -335,15 +338,20 @@ class App3D:
     def set_as_default(self):
         for ratio in self.scale_ratio:
             ratio.set(1)
+        mbox.showinfo("Info", f"Successfully!\nScale X: 1\nScale Y: 1\nScale Z: 1")
 
-    # Return pre ratio
-    # def cancel_change(self):
-    #     print("=======================")
-    #     for i in range(3):
-    #         print(self.scale_ratio_pre[i].get())
-    #         self.scale_ratio[i].set(self.scale_ratio_pre[i])
+    def save(self):
+        mbox.showinfo("Info", f"Save successfully!\nScale X: {self.object_drawing.varScale[0].get()}\nScale Y: {self.object_drawing.varScale[1].get()}\nScale Z: {self.object_drawing.varScale[2].get()}")
+        self.object_drawing.varScale_tmp[0].set(self.object_drawing.varScale[0].get())
+        self.object_drawing.varScale_tmp[1].set(self.object_drawing.varScale[1].get())
+        self.object_drawing.varScale_tmp[2].set(self.object_drawing.varScale[2].get())
+
+    def cancel(self):
+        self.object_drawing.varScale[0].set(self.object_drawing.varScale_tmp[0].get())
+        self.object_drawing.varScale[1].set(self.object_drawing.varScale_tmp[1].get())
+        self.object_drawing.varScale[2].set(self.object_drawing.varScale_tmp[2].get())
     """++++++++++++++++++++++++++++++++++++++++++"""
-    """ROTATE"""
+    """ ROTATE """
     def rotate(self):
         try:
             self.object_drawing.aphinType = 1
@@ -353,7 +361,7 @@ class App3D:
         except AttributeError:
             pass
     """++++++++++++++++++++++++++++++++++++++++++"""
-    """TRANSLATE"""
+    """ TRANSLATE """
     def translate(self):
         try:
             self.object_drawing.aphinType = 2
@@ -372,7 +380,7 @@ class App3D:
             self.object_drawing.color = np.array(askcolor(title ="Choose color")[0])
             self.button_choose_color['bg'] = '#b0f098'
     """++++++++++++++++++++++++++++++++++++++++++"""
-    # PROJECTION functions
+    """ PROJECTION """
     def load_projection_board(self):
         if self.object_drawing is not None:
             for board in self.board_using:
@@ -398,11 +406,11 @@ class App3D:
                 button_Set_as_default.place(relx=0.05, rely=buttons_y, relwidth=0.39)
 
                 # Buton: Save
-                button_Save = Button(self.frame_perspective_board, text='Save')
+                button_Save = Button(self.frame_perspective_board, text='Save', command=self.projection_save)
                 button_Save.place(relx=0.45, rely=buttons_y, relwidth=0.245)
 
                 # Button: Cancel
-                button_Cancel = Button(self.frame_perspective_board, text='Cancel')
+                button_Cancel = Button(self.frame_perspective_board, text='Cancel', command=self.projection_cancel)
                 button_Cancel.place(relx=0.705, rely=buttons_y, relwidth=0.245)
 
                 # Labels --> Show text: Fovy, Aspect, Near, Far
@@ -487,15 +495,15 @@ class App3D:
 
                 pos_buttons_y = 0.18
                 # Button --> Set as default
-                button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=lambda:self.set_as_default_(self.projection_var.get()))
+                button_Set_as_default = Button(self.frame_scale_board, text='Set as default', command=self.set_as_default_)
                 button_Set_as_default.place(relx=0.05, rely=pos_buttons_y, relwidth=0.39)
 
                 # Buton: Save
-                button_Save = Button(self.frame_scale_board, text='Save')
+                button_Save = Button(self.frame_scale_board, text='Save', command=self.projection_save)
                 button_Save.place(relx=0.45, rely=pos_buttons_y, relwidth=0.245)
 
                 # Button: Cancel
-                button_Cancel = Button(self.frame_scale_board, text='Cancel')
+                button_Cancel = Button(self.frame_scale_board, text='Cancel', command=self.projection_cancel)
                 button_Cancel.place(relx=0.705, rely=pos_buttons_y, relwidth=0.245)
 
                 # Labels --> Show text: X, Y, X
@@ -613,25 +621,71 @@ class App3D:
                 self.scale_ratio[-1].set(tmp)
     
 
-    def set_as_default_(self, attribute=None):
-        if len(self.scale_ratio) == 4:
+    def set_as_default_(self):
+        if self.projection_var.get() == 1:
             self.scale_ratio[0].set(45)
             self.scale_ratio[1].set(1)
             self.scale_ratio[2].set(1)
             self.scale_ratio[-1].set(100)
+            mbox.showinfo("Info", f"Successfully!\nFovy: {self.object_drawing.fov.get()}\nAspect: {self.object_drawing.asp.get()}\nNear: {self.object_drawing.zNear.get()}\nFar: {self.object_drawing.zFar.get()}")
+        elif self.projection_var.get() == 2:
+            self.scale_ratio[0].set(0)
+            self.scale_ratio[1].set(0)
+            self.scale_ratio[2].set(10)
+            mbox.showinfo("Info", f"Successfully!\nEye X: {self.object_drawing.eyeX.get()}\nEye Y: {self.object_drawing.eyeY.get()}\nEye Z: {self.object_drawing.eyeZ.get()}")
+        elif self.projection_var.get() == 3:
+            self.scale_ratio[0].set(0)
+            self.scale_ratio[1].set(0)
+            self.scale_ratio[2].set(0)
+            mbox.showinfo("Info", f"Successfully!\nCenter X: {self.object_drawing.centerX.get()}\nCenter Y: {self.object_drawing.centerY.get()}\nCenter Z: {self.object_drawing.centerZ.get()}")
         else:
-            if attribute == 2:
-                self.scale_ratio[0].set(0)
-                self.scale_ratio[1].set(0)
-                self.scale_ratio[2].set(10)
-            elif attribute == 3:
-                self.scale_ratio[0].set(0)
-                self.scale_ratio[1].set(0)
-                self.scale_ratio[2].set(0)
-            elif attribute == 4:
-                self.scale_ratio[0].set(0)
-                self.scale_ratio[1].set(1)
-                self.scale_ratio[2].set(0)
+            self.scale_ratio[0].set(0)
+            self.scale_ratio[1].set(1)
+            self.scale_ratio[2].set(0)
+            mbox.showinfo("Info", f"Save successfully!\nUp X: {self.object_drawing.upX.get()}\nUp Y: {self.object_drawing.upY.get()}\nUp Z: {self.object_drawing.upZ.get()}")
+
+    def projection_save(self):
+        if self.projection_var.get() == 1:
+            mbox.showinfo("Info", f"Save successfully!\nFovy: {self.object_drawing.fov.get()}\nAspect: {self.object_drawing.asp.get()}\nNear: {self.object_drawing.zNear.get()}\nFar: {self.object_drawing.zFar.get()}")
+            self.object_drawing.fov_tmp.set(self.object_drawing.fov.get())
+            self.object_drawing.asp_tmp.set(self.object_drawing.asp.get())
+            self.object_drawing.zNear_tmp.set(self.object_drawing.zNear.get())
+            self.object_drawing.zFar_tmp.set(self.object_drawing.zFar.get())
+        elif self.projection_var.get() == 2:
+            mbox.showinfo("Info", f"Save successfully!\nEye X: {self.object_drawing.eyeX.get()}\nEye Y: {self.object_drawing.eyeY.get()}\nEye Z: {self.object_drawing.eyeZ.get()}")
+            self.object_drawing.eyeX_tmp.set(self.object_drawing.eyeX.get())
+            self.object_drawing.eyeY_tmp.set(self.object_drawing.eyeY.get())
+            self.object_drawing.eyeZ_tmp.set(self.object_drawing.eyeZ.get())
+        elif self.projection_var.get() == 3:
+            mbox.showinfo("Info", f"Save successfully!\nCenter X: {self.object_drawing.centerX.get()}\nCenter Y: {self.object_drawing.centerY.get()}\nCenter Z: {self.object_drawing.centerZ.get()}")
+            self.object_drawing.centerX_tmp.set(self.object_drawing.centerX.get())
+            self.object_drawing.centerY_tmp.set(self.object_drawing.centerY.get())
+            self.object_drawing.centerZ_tmp.set(self.object_drawing.centerZ.get())
+        else:
+            mbox.showinfo("Info", f"Save successfully!\nUp X: {self.object_drawing.upX.get()}\nUp Y: {self.object_drawing.upY.get()}\nUp Z: {self.object_drawing.upZ.get()}")
+            self.object_drawing.upX_tmp.set(self.object_drawing.upX.get())
+            self.object_drawing.upY_tmp.set(self.object_drawing.upY.get())
+            self.object_drawing.upZ_tmp.set(self.object_drawing.upZ.get())
+
+    def projection_cancel(self):
+        if self.projection_var.get() == 1:
+            self.object_drawing.fov.set(self.object_drawing.fov_tmp.get())
+            self.object_drawing.asp.set(self.object_drawing.asp_tmp.get())
+            self.object_drawing.zNear.set(self.object_drawing.zNear_tmp.get())
+            self.object_drawing.zFar.set(self.object_drawing.zFar_tmp.get())
+        elif self.projection_var.get() == 2:
+            self.object_drawing.eyeX.set(self.object_drawing.eyeX_tmp.get())
+            self.object_drawing.eyeY.set(self.object_drawing.eyeY_tmp.get())
+            self.object_drawing.eyeZ.set(self.object_drawing.eyeZ_tmp.get())
+        elif self.projection_var.get() == 3:
+            self.object_drawing.centerX.set(self.object_drawing.centerX_tmp.get())
+            self.object_drawing.centerY.set(self.object_drawing.centerY_tmp.get())
+            self.object_drawing.centerZ.set(self.object_drawing.centerZ_tmp.get())
+        else:
+            self.object_drawing.upX.set(self.object_drawing.upX_tmp.get())
+            self.object_drawing.upY.set(self.object_drawing.upY_tmp.get())
+            self.object_drawing.upZ.set(self.object_drawing.upZ_tmp.get())
+
 
     """++++++++++++++++++++++++++++++++++++++++++"""
     # LIGHT functions
