@@ -16,10 +16,6 @@ class Init_Global_Para(drawObject):
         self.color = np.array([255, 255, 255])
 
         ###  Begin PROJECTION  ###
-        self.toggleProjection = 1 # 0 is off; 1 is on
-
-        # Perspective
-        self.toggleProjection_Perspective = 1 # 0 is off; 1 is on
         
         self.fov = DoubleVar() # field of view for perspective 
         self.asp = DoubleVar()  # aspect ratio; field of view for perspective
@@ -41,10 +37,6 @@ class Init_Global_Para(drawObject):
         self.zNear_tmp.set(1.0) 
         self.zFar_tmp.set(100.0)    
 
-        #------------#
-        self.toggleProjection_LookAt_Eye = 0 
-        self.toggleProjection__LookAt_Center = 0 
-        self.toggleProjection__LookAt_Up = 0 
         # can multi choice #
         self.eyeX = DoubleVar()
         self.eyeY = DoubleVar()
@@ -113,14 +105,9 @@ class Init_Global_Para(drawObject):
         self.imageWHTex = None #Load image with PIL
         self.textureDraw = None
         self.imgDataTex = None
-        # self.currentTexture = 0
         ### END TEXTURES  ###
 
-        # ###  ANIMATION  ###
-        # self.toggleAnimation = DEF_ANIMATE
-        # self.cubeRotation = DEF_CUBE_ROTATION
         ###  EFFECT  ###
-        # self.cubeRotation = DEF_CUBE_ROTATION
         self.toggleRotating = -1
         self.rotAngle = 0.0
 
