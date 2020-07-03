@@ -14,9 +14,6 @@ class Init_Global_Para(drawObject):
         self.typeDraw = typeDraw # points, lines, face
 
         self.color = np.array([255, 255, 255])
-        ###  TOGGLE DRAW DISPLAYS  ###
-        self.toggleAxes = 0
-        self.toggleParams = 1
 
         ###  Begin PROJECTION  ###
         self.toggleProjection = 1 # 0 is off; 1 is on
