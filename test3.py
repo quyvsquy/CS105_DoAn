@@ -99,6 +99,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
         glLoadIdentity()
         self.displayEye()
         glPushMatrix()
+        # self.make_flat()
 
         if self.aphinType == 0:
             glScale(self.varScale[0].get(), self.varScale[1].get(), self.varScale[2].get())
@@ -140,7 +141,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
         if self.toggleRotating != -1:
             glRotatef(self.rotAngle, 1.0, 1.0, 1.0)
             self.rotAngle += 0.25
-            
+
         if self.object == 'cube':
             self.make_cube(self.sizeObject * 0.3)
         elif self.object == 'box':
@@ -160,6 +161,7 @@ class Draw(Init_Global_Para, OpenGLFrame):
         elif self.object == 'truncated cone':
             self.make_truncatedCone(self.sizeObject * 0.3, self.sizeObject * 0.6, self.sizeObject * 0.6)
         glPopMatrix()
+
         glFlush()
 
     def tkResize(self, evt):

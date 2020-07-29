@@ -254,3 +254,21 @@ class drawObject:
                 glTexCoord2fv(self.indexCoord2f[id])
                 glVertex3fv(self.verPy[ia])
             glEnd()
+    
+    def make_flat(self):
+        glPushMatrix()
+        # glTranslatef(0 , 0, -5.0)
+        # ambien = [1.0, 1.0, 0.0, 1.0]
+        # diff_use = [1.0, 1.0, 0.0, 1.0]
+        # glMaterialfv(GL_FRONT_AND_BACK, GL_AMBIENT, ambien)
+        # glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, diff_use) 
+        glColor4f(0.5,0.5,0.5,1)
+        glRotatef(60,-1,0,0)
+        glBegin(GL_QUADS)
+        glVertex3f(-10,-10,-5)
+        glVertex3f(10,-10, -5)
+        glVertex3f(15,20,  -5)
+        glVertex3f(-15,20, -5)
+        glEnd()
+        glColor4f(1,1,1,1)
+        glPopMatrix()

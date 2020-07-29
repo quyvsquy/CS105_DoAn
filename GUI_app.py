@@ -1,7 +1,6 @@
 from tkinter import *
 import tkinter.messagebox as mbox
 from shape import drawObject
-from pyopengltk import OpenGLFrame
 from tkinter.filedialog import askopenfilename
 from tkinter.colorchooser import askcolor
 import numpy as np
@@ -11,7 +10,7 @@ from OpenGL.GLU import *
 from test3 import Draw
 from PIL import Image
 import os
-
+# import pkg_resources.py2_warn #for build file execute ubuntu
 
 def exit(obj):
     obj.destroy()

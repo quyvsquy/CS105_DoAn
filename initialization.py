@@ -156,8 +156,8 @@ class Init_Global_Para(drawObject):
                 Position  = [self.lightPosX, self.lightPosY, 3.0, 1.0]
             ###  Draw light position as sphere (still no lighting here) ###
                 glPushMatrix()
-                glColor3fv([1,1,1])
                 glDisable(GL_LIGHTING)
+                glColor3fv([1,1,1])
                 glTranslate(Position[0], Position[1], Position[2])
                 glDisable(GL_TEXTURE_2D)
                 self.make_light_source_shape()
