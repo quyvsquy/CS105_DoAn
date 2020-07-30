@@ -142,10 +142,10 @@ class Draw(Init_Global_Para, OpenGLFrame):
             glRotatef(self.rotAngle, 1.0, 1.0, 1.0)
             self.rotAngle += 0.25
 
+        # self.make_truncatedCone(1, 2,3)
+        
         if self.object == 'cube':
             self.make_cube(self.sizeObject * 0.3)
-        elif self.object == 'box':
-            self.make_box(self.sizeObject, self.sizeObject * 2, self.sizeObject * 1.5)
         elif self.object == 'teapot':
             self.make_teapot(self.sizeObject * 0.3)
         elif self.object == 'sphere':

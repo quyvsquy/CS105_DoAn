@@ -154,14 +154,14 @@ class App3D:
         """-----------------------------------------"""
         # Objects buttons: teapot  
         # Images
-        teapot = PhotoImage(file = './imgs/teapot.png').subsample(5, 4)
-        cube = PhotoImage(file = './imgs/cube.png').subsample(9, 10)
-        sphere = PhotoImage(file = './imgs/sphere.png').subsample(8, 10)
-        cylinder = PhotoImage(file = './imgs/cylinder.png').subsample(4, 6)    
-        torus = PhotoImage(file = './imgs/torus.png').subsample(7, 8)    
-        cone = PhotoImage(file = './imgs/cone.png').subsample(4, 7) 
-        pyramid = PhotoImage(file = './imgs/pyramid.png').subsample(6, 8) 
-        truncated_cone = PhotoImage(file = './imgs/truncatedcone.png').subsample(6, 6) 
+        teapot = PhotoImage(file = './imgs/teapot.png').subsample(8,8)
+        cube = PhotoImage(file = './imgs/cube.png').subsample(8,8)
+        sphere = PhotoImage(file = './imgs/sphere.png').subsample(8, 8)
+        cylinder = PhotoImage(file = './imgs/cylinder.png').subsample(8, 8)    
+        torus = PhotoImage(file = './imgs/torus.png').subsample(8, 8)    
+        cone = PhotoImage(file = './imgs/cone.png').subsample(8, 8) 
+        pyramid = PhotoImage(file = './imgs/pyramid.png').subsample(8, 8) 
+        truncated_cone = PhotoImage(file = './imgs/truncatedcone.png').subsample(8, 8) 
         # Buttons
         # Teapot
         objects_y = 0.03
